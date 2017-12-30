@@ -19,6 +19,6 @@ public class RegisterClassesForServer {
 	private static void registerClasses(Kryo kryo) {
 		kryo.register(String.class);
 		kryo.register(Long.class);
-		kryo.register(Player.playerStats.class);
+		kryo.register(Player.PlayerStats.class);
 	}
 }

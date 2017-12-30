@@ -51,8 +51,6 @@ public class Game extends com.badlogic.gdx.Game {
 				}
 			}
 		});
-		
-		client.sendTCP(System.currentTimeMillis());
 	}
 
 	@Override

@@ -57,14 +57,25 @@ public class Player {
 		return direction;
 	}
 
-	public static class playerStats {
+	public static class PlayerStats {
 		public float x, y;
 		public double direction;
 
-		public playerStats(float x, float y, double direction) {
+		public PlayerStats(float x, float y, double direction) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
+		}
+		
+		public PlayerStats(String s) {
+			String[] data = s.split(";");
+			x = Float.parseFloat(data[0]);
+			y = Float.parseFloat(data[1]);
+			direction = Double.parseDouble(data[2]);
+		}
+		
+		public String sendTcp() {
+			return x + ";" + y + ";" + direction;
 		}
 	}
 }

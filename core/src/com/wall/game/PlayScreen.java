@@ -62,8 +62,8 @@ public class PlayScreen implements Screen {
 		}
 
 		// Send the data to the server
-		game.client.sendTCP(new Player.playerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
-				players.get(myPlayerindex).getDirectionInRads()));
+		game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+				players.get(myPlayerindex).getDirectionInRads()).sendTcp());
 
 	}
 

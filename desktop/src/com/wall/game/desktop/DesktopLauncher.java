@@ -12,7 +12,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.wall.game.Game;
 import com.wall.game.Player;
 import com.wall.game.RegisterClassesForServer;
-import com.wall.game.Player.playerStats;
+import com.wall.game.Player.PlayerStats;
 
 public class DesktopLauncher {
 	public static void main(String[] arg) throws IOException {
@@ -28,18 +28,14 @@ public class DesktopLauncher {
 			server.addListener(new Listener() {
 				public void received(Connection connection, Object object) {
 					if (object instanceof String) {
-						System.out.println((String) object);
-
+						PlayerStats ps = new PlayerStats((String) object);
+						System.out.println(ps.x + " - " + ps.y);
 						connection.sendTCP("received");
 					}
 					if(object instanceof Long) {
 						System.out.println(System.currentTimeMillis() - (Long) object);
 						
 						connection.sendTCP(System.currentTimeMillis());
-					}
-					if(object instanceof Player.playerStats) {
-						playerStats ps = (playerStats) object;
-						System.out.println(ps.x);
 					}
 				}
 			});
