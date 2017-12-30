@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
 
 public class PlayScreen implements Screen {
 
@@ -55,7 +57,7 @@ public class PlayScreen implements Screen {
 		for (int i = lasers.size() - 1; i >= 0; i--) {
 			lasers.get(i).update(dt);
 		}
-
+		
 	}
 
 	@Override
