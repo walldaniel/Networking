@@ -1,6 +1,8 @@
 package com.wall.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -24,10 +26,10 @@ public class PlayScreen implements Screen {
 	private Texture laserTex;
 	private Sprite laserSprite;
 
-	private ArrayList<Player> players;
+	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
 
-	private int myPlayerindex;
+	public Integer myPlayerindex;
 
 	public PlayScreen(final Game game) {
 		this.game = game;
@@ -40,14 +42,54 @@ public class PlayScreen implements Screen {
 		laserTex = new Texture("laser.png");
 		laserSprite = new Sprite(laserTex);
 
-		players = new ArrayList<Player>();
+		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
 
 		myPlayerindex = players.size();
-		players.add(new Player(32, 32, Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S, Input.Keys.SPACE));
+		Player player = new Player(32, 32);
+		game.client.sendTCP(player);
 	}
 
 	public void update(float dt) {
+		if (myPlayerindex != null && players.containsKey(myPlayerindex)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+				players.get(myPlayerindex).addDirection(dt * 8f);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+				players.get(myPlayerindex).addDirection(-dt * 8f);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+				players.get(myPlayerindex).addX(
+						-8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
+				players.get(myPlayerindex).addY(
+						8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+				players.get(myPlayerindex).addX(
+						8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
+				players.get(myPlayerindex).addY(
+						-8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
+			}
+
+			// Used to get the front of the ship
+			// TODO: Change this to something better
+			shipSprite.setRotation((float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads()));
+			shipSprite.setX(players.get(myPlayerindex).getX());
+			shipSprite.setY(players.get(myPlayerindex).getY());
+
+			// If the space bar is pressed launch new bullet at the center of the sprite
+			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+				lasers.add(new Laser(
+						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
+						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
+						players.get(myPlayerindex).getDirectionInRads()));
+			}
+			
+			// Send the data to the server
+			game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+					players.get(myPlayerindex).getDirectionInRads()).sendTcp());
+
+		}
 		// Check if a laser has exited the screen
 		// TODO: make removal of lasers more efficient
 		for (int i = lasers.size() - 1; i >= 0; i--) {
@@ -61,16 +103,17 @@ public class PlayScreen implements Screen {
 			lasers.get(i).update(dt);
 		}
 
-		// Send the data to the server
-		game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
-				players.get(myPlayerindex).getDirectionInRads()).sendTcp());
-
+		
 	}
 
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void addPlayer(Player player) {
+		players.put(player.getPlayerNumber(), player);
 	}
 
 	@Override
@@ -88,34 +131,13 @@ public class PlayScreen implements Screen {
 		game.sb.begin();
 
 		// Player stuff
-		for (Player player : players) {
-			if (Gdx.input.isKeyPressed(player.turnLeft)) {
-				player.addDirection(dt * 8f);
-			}
-			if (Gdx.input.isKeyPressed(player.turnRight)) {
-				player.addDirection(-dt * 8f);
-			}
-			if (Gdx.input.isKeyPressed(player.forward)) {
-				player.addX(-8f * dt * (float) Math.toDegrees(Math.sin(player.getDirectionInRads())));
-				player.addY(8f * dt * (float) Math.toDegrees(Math.cos(player.getDirectionInRads())));
-			}
-			if (Gdx.input.isKeyPressed(player.backward)) {
-				player.addX(8f * dt * (float) Math.toDegrees(Math.sin(player.getDirectionInRads())));
-				player.addY(-8f * dt * (float) Math.toDegrees(Math.cos(player.getDirectionInRads())));
-			}
+		for (Player player : players.values()) {
 
 			shipSprite.setRotation((float) Math.toDegrees(player.getDirectionInRads()));
 			shipSprite.setX(player.getX());
 			shipSprite.setY(player.getY());
 			shipSprite.draw(game.sb);
 
-			// If the space bar is pressed launch new bullet at the center of the sprite
-			if (Gdx.input.isKeyJustPressed(player.shoot)) {
-				lasers.add(new Laser(
-						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
-						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
-						player.getDirectionInRads()));
-			}
 		}
 
 		// Draw all the lasers

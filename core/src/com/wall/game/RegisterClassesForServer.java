@@ -20,5 +20,7 @@ public class RegisterClassesForServer {
 		kryo.register(String.class);
 		kryo.register(Long.class);
 		kryo.register(Player.PlayerStats.class);
+		kryo.register(Player.class);
+		kryo.register(Integer.class);
 	}
 }

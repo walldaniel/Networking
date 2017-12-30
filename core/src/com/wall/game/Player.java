@@ -1,26 +1,32 @@
 package com.wall.game;
 
+
 public class Player {
 
-	public final int turnLeft, turnRight;
-	public final int forward, backward;
-	public final int shoot;
+	private int playerNumber;
+	
 
 	private float x, y;
 	private double direction;
 
-	public Player(float x, float y, int left, int right, int forward, int backward, int shoot) {
+	public Player(float x, float y) {
 		this.x = x;
 		this.y = y;
 		direction = 0;
-
-		turnLeft = left;
-		turnRight = right;
-		this.forward = forward;
-		this.backward = backward;
-		this.shoot = shoot;
 	}
 
+	public Player() {
+		
+	}
+	
+	public void setPlayerNumber(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
+
+	public int getPlayerNumber() {
+		return playerNumber;
+	}
+	
 	public void setX(float x) {
 		this.x = x;
 	}
@@ -66,16 +72,22 @@ public class Player {
 			this.y = y;
 			this.direction = direction;
 		}
-		
+
+		public PlayerStats() {
+			x = 0f;
+			y = 0f;
+			direction = 0;
+		}
+
 		public PlayerStats(String s) {
-			String[] data = s.split(";");
+			String[] data = s.split(",");
 			x = Float.parseFloat(data[0]);
 			y = Float.parseFloat(data[1]);
 			direction = Double.parseDouble(data[2]);
 		}
-		
+
 		public String sendTcp() {
-			return x + ";" + y + ";" + direction;
+			return x + "," + y + "," + direction;
 		}
 	}
 }

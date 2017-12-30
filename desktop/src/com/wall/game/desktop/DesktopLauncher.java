@@ -15,11 +15,13 @@ import com.wall.game.RegisterClassesForServer;
 import com.wall.game.Player.PlayerStats;
 
 public class DesktopLauncher {
+	
+	private static Integer playerNumber = -1;
 	public static void main(String[] arg) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Is this the server (y/n)? : ");
 		if (br.readLine().charAt(0) == 'y') {
-			Server server = new Server();
+			final Server server = new Server();
 			server.start();
 			server.bind(54555, 54777);
 
@@ -31,6 +33,18 @@ public class DesktopLauncher {
 						PlayerStats ps = new PlayerStats((String) object);
 						System.out.println(ps.x + " - " + ps.y);
 						connection.sendTCP("received");
+						
+						server.sendToAllTCP(object);
+					}
+					if(object instanceof Player) {
+						// Send player what player number they are in the array
+						connection.sendTCP(playerNumber++);
+						
+						Player player = (Player) object;
+						player.setPlayerNumber(playerNumber);
+						
+						connection.sendTCP(playerNumber);
+						server.sendToAllTCP(player);
 					}
 					if(object instanceof Long) {
 						System.out.println(System.currentTimeMillis() - (Long) object);
