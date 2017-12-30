@@ -44,10 +44,15 @@ public class Game extends com.badlogic.gdx.Game {
 				if(object instanceof String) {
 					System.out.println((String) object);
 				}
+				if(object instanceof Long) {
+					System.out.println(System.currentTimeMillis() - (Long) object);
+					
+					connection.sendTCP(System.currentTimeMillis());
+				}
 			}
 		});
 		
-		client.sendTCP("hello");
+		client.sendTCP(System.currentTimeMillis());
 	}
 
 	@Override

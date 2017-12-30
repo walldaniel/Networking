@@ -27,6 +27,8 @@ public class PlayScreen implements Screen {
 	private ArrayList<Player> players;
 	private ArrayList<Laser> lasers;
 
+	private int myPlayerindex;
+
 	public PlayScreen(final Game game) {
 		this.game = game;
 
@@ -41,6 +43,7 @@ public class PlayScreen implements Screen {
 		players = new ArrayList<Player>();
 		lasers = new ArrayList<Laser>();
 
+		myPlayerindex = players.size();
 		players.add(new Player(32, 32, Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S, Input.Keys.SPACE));
 	}
 
@@ -57,7 +60,11 @@ public class PlayScreen implements Screen {
 		for (int i = lasers.size() - 1; i >= 0; i--) {
 			lasers.get(i).update(dt);
 		}
-		
+
+		// Send the data to the server
+		game.client.sendTCP(new Player.playerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+				players.get(myPlayerindex).getDirectionInRads()));
+
 	}
 
 	@Override

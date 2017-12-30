@@ -10,35 +10,46 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wall.game.Game;
+import com.wall.game.Player;
 import com.wall.game.RegisterClassesForServer;
+import com.wall.game.Player.playerStats;
 
 public class DesktopLauncher {
 	public static void main(String[] arg) throws IOException {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.x = Game.WIDTH;
-		config.y = Game.HEIGHT;
-		config.foregroundFPS = 60;
-		new LwjglApplication(new Game(), config);
-
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Is this the server (y/n)? : ");
 		if (br.readLine().charAt(0) == 'y') {
 			Server server = new Server();
 			server.start();
 			server.bind(54555, 54777);
-			
+
 			RegisterClassesForServer.registerServer(server);
-			
+
 			server.addListener(new Listener() {
-				public void received (Connection connection, Object object) {
-					if(object instanceof String) {
+				public void received(Connection connection, Object object) {
+					if (object instanceof String) {
 						System.out.println((String) object);
-						
+
 						connection.sendTCP("received");
+					}
+					if(object instanceof Long) {
+						System.out.println(System.currentTimeMillis() - (Long) object);
+						
+						connection.sendTCP(System.currentTimeMillis());
+					}
+					if(object instanceof Player.playerStats) {
+						playerStats ps = (playerStats) object;
+						System.out.println(ps.x);
 					}
 				}
 			});
 		}
+
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.x = Game.WIDTH;
+		config.y = Game.HEIGHT;
+		config.foregroundFPS = 60;
+		new LwjglApplication(new Game(), config);
 
 	}
 }
