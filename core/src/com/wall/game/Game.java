@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.wall.game.Laser.LaserStat;
 import com.wall.game.Player.PlayerStats;
 
 public class Game extends com.badlogic.gdx.Game {
@@ -55,6 +56,9 @@ public class Game extends com.badlogic.gdx.Game {
 
 						screen.updatePlayerPos(ps);
 					}
+				}
+				if(object instanceof LaserStat) {
+					screen.addLaser((LaserStat) object);
 				}
 				if (object instanceof Player) {
 					// Add player to list of players

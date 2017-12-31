@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wall.game.Laser.LaserStat;
 import com.wall.game.Player.PlayerStats;
 
 public class PlayScreen implements Screen {
@@ -45,9 +46,12 @@ public class PlayScreen implements Screen {
 		lasers = new ArrayList<Laser>();
 
 		Player player = new Player(32, 32);
+		player.setPlayerNumber((short) game.client.getID()); 
 //		players.put(game.client.getID(), player);
 		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
+		
+		game.client.sendTCP("GET_PLAYERS");
 	}
 
 	public void update(float dt) {
@@ -99,6 +103,8 @@ public class PlayScreen implements Screen {
 						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
 						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
 						players.get(myPlayerindex).getDirectionInRads()));
+				
+				game.client.sendTCP(lasers.get(lasers.size() - 1).toLaserStat());
 			}
 
 		}
@@ -203,6 +209,10 @@ public class PlayScreen implements Screen {
 			players.get((int) playerStats.index).setX(playerStats.x);
 			players.get((int) playerStats.index).setY(playerStats.y);
 		}
+	}
+
+	public void addLaser(LaserStat laser) {
+		lasers.add(new Laser(laser.x, laser.y, laser.direction));
 	}
 
 }

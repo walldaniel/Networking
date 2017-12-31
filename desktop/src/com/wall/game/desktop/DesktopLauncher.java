@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wall.game.Game;
+import com.wall.game.Laser.LaserStat;
 import com.wall.game.Player;
 import com.wall.game.RegisterClassesForServer;
 
@@ -38,6 +39,9 @@ public class DesktopLauncher {
 							System.out.println(connection.getID());
 							server.sendToAllTCP(s);
 						}
+					}
+					if(object instanceof LaserStat) {
+						server.sendToAllExceptTCP(connection.getID(), object);
 					}
 					if (object instanceof Player) {
 						// Send player what player number they are in the array

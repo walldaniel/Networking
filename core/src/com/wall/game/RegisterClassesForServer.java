@@ -3,6 +3,7 @@ package com.wall.game;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import com.wall.game.Laser.LaserStat;
 
 public class RegisterClassesForServer {
 
@@ -22,5 +23,7 @@ public class RegisterClassesForServer {
 		kryo.register(Player.PlayerStats.class);
 		kryo.register(Player.class);
 		kryo.register(Integer.class);
+		kryo.register(Laser.class);
+		kryo.register(LaserStat.class);
 	}
 }
