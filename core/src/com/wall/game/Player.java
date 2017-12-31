@@ -1,11 +1,8 @@
 package com.wall.game;
 
-import java.util.ArrayList;
-
 public class Player {
 
-	private int playerNumber;
-	
+	private short playerNumber;
 
 	private float x, y;
 	private double direction;
@@ -17,17 +14,17 @@ public class Player {
 	}
 
 	public Player() {
-		
+
 	}
-	
-	public void setPlayerNumber(int playerNumber) {
+
+	public void setPlayerNumber(short playerNumber) {
 		this.playerNumber = playerNumber;
 	}
 
-	public int getPlayerNumber() {
+	public short getPlayerNumber() {
 		return playerNumber;
 	}
-	
+
 	public void setX(float x) {
 		this.x = x;
 	}
@@ -67,9 +64,9 @@ public class Player {
 	public static class PlayerStats {
 		public float x, y;
 		public double direction;
-		public int index;
+		public short index;
 
-		public PlayerStats(float x, float y, double direction, int index) {
+		public PlayerStats(float x, float y, double direction, short index) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
@@ -85,10 +82,10 @@ public class Player {
 		public PlayerStats(String s) {
 			String[] data = s.split(",");
 			try {
-			x = Float.parseFloat(data[0]);
-			y = Float.parseFloat(data[1]);
-			direction = Double.parseDouble(data[2]);
-			index = Integer.parseInt(data[3]);
+				x = Float.parseFloat(data[0]);
+				y = Float.parseFloat(data[1]);
+				direction = Double.parseDouble(data[2]);
+				index = Short.parseShort(data[3]);
 			} catch (NumberFormatException e) {
 				System.out.println("Error reading the player data");
 			}
@@ -97,6 +94,6 @@ public class Player {
 		public String sendTcp() {
 			return x + "," + y + "," + direction + "," + index;
 		}
-		
+
 	}
 }

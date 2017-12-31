@@ -44,15 +44,16 @@ public class PlayScreen implements Screen {
 		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
 
-		myPlayerindex = players.size();
 		Player player = new Player(32, 32);
+		players.put(game.client.getID(), player);
 		game.client.sendTCP(player);
+		myPlayerindex = game.client.getID();
 	}
 
 	public void update(float dt) {
 		// new turn so hasn't moved yet
 		moved = false;
-		
+
 		// Get the user input
 		if (myPlayerindex != null && players.containsKey(myPlayerindex)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -80,11 +81,12 @@ public class PlayScreen implements Screen {
 
 			// Send the data to the server only if the player has moved
 			// TODO: if the laggy send in better format such as byte array
-			if(moved) {
-				game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
-						players.get(myPlayerindex).getDirectionInRads(), players.get(myPlayerindex).getPlayerNumber()).sendTcp());
+			if (moved) {
+				game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(),
+						players.get(myPlayerindex).getY(), players.get(myPlayerindex).getDirectionInRads(),
+						players.get(myPlayerindex).getPlayerNumber()).sendTcp());
 			}
-			
+
 			// Used to get the front of the ship
 			// TODO: Change this to something better
 			shipSprite.setRotation((float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads()));
@@ -98,7 +100,6 @@ public class PlayScreen implements Screen {
 						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
 						players.get(myPlayerindex).getDirectionInRads()));
 			}
-			
 
 		}
 		// Check if a laser has exited the screen
@@ -114,7 +115,6 @@ public class PlayScreen implements Screen {
 			lasers.get(i).update(dt);
 		}
 
-		
 	}
 
 	@Override
@@ -125,11 +125,11 @@ public class PlayScreen implements Screen {
 
 	// Only add a player if their number isn't in the player map
 	public void addPlayer(Player player) {
-		if(!players.containsKey(player.getPlayerNumber()))
-			players.put(player.getPlayerNumber(), player);
+		if (!players.containsKey((int) player.getPlayerNumber()))
+			players.put((int) player.getPlayerNumber(), player);
 	}
 
-	public HashMap<Integer, Player> getPlayes() {
+	public HashMap<Integer, Player> getPlayers() {
 		return players;
 	}
 
@@ -198,9 +198,11 @@ public class PlayScreen implements Screen {
 	}
 
 	public void updatePlayerPos(PlayerStats playerStats) {
-		players.get(playerStats.index).setDirection(playerStats.direction);
-		players.get(playerStats.index).setX(playerStats.x);
-		players.get(playerStats.index).setY(playerStats.y);
+		if (players.containsKey(playerStats.index)) {
+			players.get((int) playerStats.index).setDirection(playerStats.direction);
+			players.get((int) playerStats.index).setX(playerStats.x);
+			players.get((int) playerStats.index).setY(playerStats.y);
+		}
 	}
 
 }

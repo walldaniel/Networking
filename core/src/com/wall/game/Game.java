@@ -48,7 +48,7 @@ public class Game extends com.badlogic.gdx.Game {
 			public void received(Connection connection, Object object) {
 				if (object instanceof String) {
 					if (object.equals("GET_PLAYERS")) {
-						client.sendTCP(screen.getPlayes().get(screen.myPlayerindex));
+						client.sendTCP(screen.getPlayers().get(screen.myPlayerindex));
 					} else {
 						PlayerStats ps = new PlayerStats((String) object);
 
@@ -60,12 +60,6 @@ public class Game extends com.badlogic.gdx.Game {
 					Player player = (Player) object;
 					screen.addPlayer(player);
 				}
-				if (object instanceof Integer) {
-					if(client.getID() == (Integer) object) {
-						screen.myPlayerindex = client.getID();
-						System.out.println("My connection is: " + client.getID());
-					}
-				}
 				if (object instanceof Long) {
 					System.out.println(System.currentTimeMillis() - (Long) object);
 
@@ -73,6 +67,7 @@ public class Game extends com.badlogic.gdx.Game {
 				}
 			}
 		});
+//		screen.myPlayerindex = client.getID();
 
 		sb = new SpriteBatch();
 

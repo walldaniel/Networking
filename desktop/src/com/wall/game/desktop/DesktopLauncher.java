@@ -12,11 +12,9 @@ import com.esotericsoftware.kryonet.Server;
 import com.wall.game.Game;
 import com.wall.game.Player;
 import com.wall.game.RegisterClassesForServer;
-import com.wall.game.Player.PlayerStats;
 
 public class DesktopLauncher {
 
-	private static Integer playerNumber = -1;
 
 	public static void main(String[] arg) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,7 +32,7 @@ public class DesktopLauncher {
 						if (object.equals("GET_PLAYERS")) {
 							server.sendToAllTCP("GET_PLAYERS");
 						} else {
-							PlayerStats ps = new PlayerStats((String) object);
+//							PlayerStats ps = new PlayerStats((String) object);
 //							System.out.println(ps.x + " - " + ps.y);
 							System.out.println(connection.getID());
 							server.sendToAllTCP(object);
@@ -42,10 +40,10 @@ public class DesktopLauncher {
 					}
 					if (object instanceof Player) {
 						// Send player what player number they are in the array
-						connection.sendTCP(connection.getID());
+//						connection.sendTCP(connection.getID());	<-- No longer needed because of client.getid
 
 						Player player = (Player) object;
-						player.setPlayerNumber(connection.getID());
+						player.setPlayerNumber((short) connection.getID());
 						server.sendToAllTCP(player);
 					}
 					if (object instanceof Long) {
