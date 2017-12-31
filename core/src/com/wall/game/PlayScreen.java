@@ -24,9 +24,13 @@ public class PlayScreen implements Screen {
 
 	private Texture laserTex;
 	private Sprite laserSprite;
+	
+	private Texture enemyTex;
+	private Sprite enemySprite;
 
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
+	private ArrayList<Enemy> enemies;
 
 	public Integer myPlayerindex;
 	private boolean moved;
@@ -41,10 +45,12 @@ public class PlayScreen implements Screen {
 		shipSprite = new Sprite(shipTex);
 		laserTex = new Texture("laser.png");
 		laserSprite = new Sprite(laserTex);
+		enemyTex = new Texture("enemy.png");
+		enemySprite = new Sprite(enemyTex);
 
 		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
-
+		enemies = new ArrayList<Enemy>();
 		Player player = new Player(32, 32);
 		player.setPlayerNumber((short) game.client.getID()); 
 //		players.put(game.client.getID(), player);
@@ -170,6 +176,12 @@ public class PlayScreen implements Screen {
 			laserSprite.setY(laser.getY());
 			laserSprite.draw(game.sb);
 		}
+		
+		for(Enemy enemy : enemies) {
+			enemySprite.setX(enemy.x);
+			enemySprite.setY(enemy.y);
+			enemySprite.draw(game.sb);
+		}
 
 		game.sb.end();
 	}
@@ -213,6 +225,10 @@ public class PlayScreen implements Screen {
 
 	public void addLaser(LaserStat laser) {
 		lasers.add(new Laser(laser.x, laser.y, laser.direction));
+	}
+
+	public void addEnemy(Enemy enemy) {
+		enemies.add(enemy);
 	}
 
 }

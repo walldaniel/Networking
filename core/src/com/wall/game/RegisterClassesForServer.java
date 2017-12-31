@@ -25,5 +25,6 @@ public class RegisterClassesForServer {
 		kryo.register(Integer.class);
 		kryo.register(Laser.class);
 		kryo.register(LaserStat.class);
+		kryo.register(Enemy.class);
 	}
 }

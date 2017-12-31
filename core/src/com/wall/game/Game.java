@@ -60,6 +60,9 @@ public class Game extends com.badlogic.gdx.Game {
 				if(object instanceof LaserStat) {
 					screen.addLaser((LaserStat) object);
 				}
+				if(object instanceof Enemy) {
+					screen.addEnemy((Enemy) object);
+				}
 				if (object instanceof Player) {
 					// Add player to list of players
 //					Player player = (Player) object;
