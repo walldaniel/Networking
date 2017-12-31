@@ -123,8 +123,14 @@ public class PlayScreen implements Screen {
 
 	}
 
+	// Only add a player if their number isn't in the player map
 	public void addPlayer(Player player) {
-		players.put(player.getPlayerNumber(), player);
+		if(!players.containsKey(player.getPlayerNumber()))
+			players.put(player.getPlayerNumber(), player);
+	}
+
+	public HashMap<Integer, Player> getPlayes() {
+		return players;
 	}
 
 	@Override

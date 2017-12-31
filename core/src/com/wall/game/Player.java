@@ -1,5 +1,6 @@
 package com.wall.game;
 
+import java.util.ArrayList;
 
 public class Player {
 
@@ -96,5 +97,6 @@ public class Player {
 		public String sendTcp() {
 			return x + "," + y + "," + direction + "," + index;
 		}
+		
 	}
 }

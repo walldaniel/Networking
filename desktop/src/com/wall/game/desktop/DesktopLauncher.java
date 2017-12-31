@@ -15,8 +15,9 @@ import com.wall.game.RegisterClassesForServer;
 import com.wall.game.Player.PlayerStats;
 
 public class DesktopLauncher {
-	
+
 	private static Integer playerNumber = -1;
+
 	public static void main(String[] arg) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Is this the server (y/n)? : ");
@@ -30,25 +31,26 @@ public class DesktopLauncher {
 			server.addListener(new Listener() {
 				public void received(Connection connection, Object object) {
 					if (object instanceof String) {
-						PlayerStats ps = new PlayerStats((String) object);
-						System.out.println(ps.x + " - " + ps.y);
-						connection.sendTCP("received");
-						
-						server.sendToAllTCP(object);
+						if (object.equals("GET_PLAYERS")) {
+							server.sendToAllTCP("GET_PLAYERS");
+						} else {
+							PlayerStats ps = new PlayerStats((String) object);
+//							System.out.println(ps.x + " - " + ps.y);
+							System.out.println(connection.getID());
+							server.sendToAllTCP(object);
+						}
 					}
-					if(object instanceof Player) {
+					if (object instanceof Player) {
 						// Send player what player number they are in the array
-						connection.sendTCP(playerNumber++);
-						
+						connection.sendTCP(connection.getID());
+
 						Player player = (Player) object;
-						player.setPlayerNumber(playerNumber);
-						
-						connection.sendTCP(playerNumber);
+						player.setPlayerNumber(connection.getID());
 						server.sendToAllTCP(player);
 					}
-					if(object instanceof Long) {
+					if (object instanceof Long) {
 						System.out.println(System.currentTimeMillis() - (Long) object);
-						
+
 						connection.sendTCP(System.currentTimeMillis());
 					}
 				}
