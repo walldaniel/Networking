@@ -198,7 +198,7 @@ public class PlayScreen implements Screen {
 	}
 
 	public void updatePlayerPos(PlayerStats playerStats) {
-		if (players.containsKey(playerStats.index)) {
+		if (players.containsKey((int) playerStats.index)) {
 			players.get((int) playerStats.index).setDirection(playerStats.direction);
 			players.get((int) playerStats.index).setX(playerStats.x);
 			players.get((int) playerStats.index).setY(playerStats.y);
