@@ -45,7 +45,8 @@ public class PlayScreen implements Screen {
 		lasers = new ArrayList<Laser>();
 
 		Player player = new Player(32, 32);
-		players.put(game.client.getID(), player);
+//		players.put(game.client.getID(), player);
+		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
 	}
 

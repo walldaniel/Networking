@@ -29,13 +29,14 @@ public class DesktopLauncher {
 			server.addListener(new Listener() {
 				public void received(Connection connection, Object object) {
 					if (object instanceof String) {
-						if (object.equals("GET_PLAYERS")) {
+						String s = (String) object;
+						if (s.equals("GET_PLAYERS")) {
 							server.sendToAllTCP("GET_PLAYERS");
 						} else {
 //							PlayerStats ps = new PlayerStats((String) object);
 //							System.out.println(ps.x + " - " + ps.y);
 							System.out.println(connection.getID());
-							server.sendToAllExceptTCP(connection.getID(), object);
+							server.sendToAllTCP(s);
 						}
 					}
 					if (object instanceof Player) {
@@ -44,7 +45,7 @@ public class DesktopLauncher {
 
 //						Player player = (Player) object;
 //						player.setPlayerNumber((short) connection.getID());
-						server.sendToAllTCP(object);
+						server.sendToAllTCP((Player) object);
 					}
 				}
 			});

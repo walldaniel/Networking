@@ -47,10 +47,11 @@ public class Game extends com.badlogic.gdx.Game {
 		client.addListener(new Listener() {
 			public void received(Connection connection, Object object) {
 				if (object instanceof String) {
-					if (object.equals("GET_PLAYERS")) {
+					String s = (String) object;
+					if (s.equals("GET_PLAYERS")) {
 						client.sendTCP(screen.getPlayers().get(screen.myPlayerindex));
 					} else {
-						PlayerStats ps = new PlayerStats((String) object);
+						PlayerStats ps = new PlayerStats(s);
 
 						screen.updatePlayerPos(ps);
 					}
