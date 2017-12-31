@@ -66,11 +66,13 @@ public class Player {
 	public static class PlayerStats {
 		public float x, y;
 		public double direction;
+		public int index;
 
-		public PlayerStats(float x, float y, double direction) {
+		public PlayerStats(float x, float y, double direction, int index) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
+			this.index = index;
 		}
 
 		public PlayerStats() {
@@ -81,13 +83,18 @@ public class Player {
 
 		public PlayerStats(String s) {
 			String[] data = s.split(",");
+			try {
 			x = Float.parseFloat(data[0]);
 			y = Float.parseFloat(data[1]);
 			direction = Double.parseDouble(data[2]);
+			index = Integer.parseInt(data[3]);
+			} catch (NumberFormatException e) {
+				System.out.println("Error reading the player data");
+			}
 		}
 
 		public String sendTcp() {
-			return x + "," + y + "," + direction;
+			return x + "," + y + "," + direction + "," + index;
 		}
 	}
 }

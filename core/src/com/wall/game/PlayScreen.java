@@ -2,7 +2,6 @@ package com.wall.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,8 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Server;
+import com.wall.game.Player.PlayerStats;
 
 public class PlayScreen implements Screen {
 
@@ -30,6 +28,7 @@ public class PlayScreen implements Screen {
 	private ArrayList<Laser> lasers;
 
 	public Integer myPlayerindex;
+	private boolean moved;
 
 	public PlayScreen(final Game game) {
 		this.game = game;
@@ -51,26 +50,41 @@ public class PlayScreen implements Screen {
 	}
 
 	public void update(float dt) {
+		// new turn so hasn't moved yet
+		moved = false;
+		
+		// Get the user input
 		if (myPlayerindex != null && players.containsKey(myPlayerindex)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 				players.get(myPlayerindex).addDirection(dt * 8f);
+				moved = true;
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 				players.get(myPlayerindex).addDirection(-dt * 8f);
+				moved = true;
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 				players.get(myPlayerindex).addX(
 						-8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
 				players.get(myPlayerindex).addY(
 						8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
+				moved = true;
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 				players.get(myPlayerindex).addX(
 						8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
 				players.get(myPlayerindex).addY(
 						-8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
+				moved = true;
 			}
 
+			// Send the data to the server only if the player has moved
+			// TODO: if the laggy send in better format such as byte array
+			if(moved) {
+				game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+						players.get(myPlayerindex).getDirectionInRads(), players.get(myPlayerindex).getPlayerNumber()).sendTcp());
+			}
+			
 			// Used to get the front of the ship
 			// TODO: Change this to something better
 			shipSprite.setRotation((float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads()));
@@ -85,9 +99,6 @@ public class PlayScreen implements Screen {
 						players.get(myPlayerindex).getDirectionInRads()));
 			}
 			
-			// Send the data to the server
-			game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
-					players.get(myPlayerindex).getDirectionInRads()).sendTcp());
 
 		}
 		// Check if a laser has exited the screen
@@ -178,6 +189,12 @@ public class PlayScreen implements Screen {
 	@Override
 	public void dispose() {
 		shipTex.dispose();
+	}
+
+	public void updatePlayerPos(PlayerStats playerStats) {
+		players.get(playerStats.index).setDirection(playerStats.direction);
+		players.get(playerStats.index).setX(playerStats.x);
+		players.get(playerStats.index).setY(playerStats.y);
 	}
 
 }

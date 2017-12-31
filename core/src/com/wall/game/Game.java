@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.wall.game.Player.PlayerStats;
 
 public class Game extends com.badlogic.gdx.Game {
 
@@ -47,7 +47,9 @@ public class Game extends com.badlogic.gdx.Game {
 		client.addListener(new Listener() {
 			public void received(Connection connection, Object object) {
 				if (object instanceof String) {
-					System.out.println("Halp");
+					PlayerStats ps = new PlayerStats((String) object);
+					
+					screen.updatePlayerPos(ps);
 				}
 				if (object instanceof Player) {
 					// Add player to list of players
