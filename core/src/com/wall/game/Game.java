@@ -57,8 +57,8 @@ public class Game extends com.badlogic.gdx.Game {
 				}
 				if (object instanceof Player) {
 					// Add player to list of players
-					Player player = (Player) object;
-					screen.addPlayer(player);
+//					Player player = (Player) object;
+					screen.addPlayer((Player) object);
 				}
 				if (object instanceof Long) {
 					System.out.println(System.currentTimeMillis() - (Long) object);

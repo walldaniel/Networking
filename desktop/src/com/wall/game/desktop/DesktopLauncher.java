@@ -35,21 +35,16 @@ public class DesktopLauncher {
 //							PlayerStats ps = new PlayerStats((String) object);
 //							System.out.println(ps.x + " - " + ps.y);
 							System.out.println(connection.getID());
-							server.sendToAllTCP(object);
+							server.sendToAllExceptTCP(connection.getID(), object);
 						}
 					}
 					if (object instanceof Player) {
 						// Send player what player number they are in the array
 //						connection.sendTCP(connection.getID());	<-- No longer needed because of client.getid
 
-						Player player = (Player) object;
-						player.setPlayerNumber((short) connection.getID());
-						server.sendToAllTCP(player);
-					}
-					if (object instanceof Long) {
-						System.out.println(System.currentTimeMillis() - (Long) object);
-
-						connection.sendTCP(System.currentTimeMillis());
+//						Player player = (Player) object;
+//						player.setPlayerNumber((short) connection.getID());
+						server.sendToAllTCP(object);
 					}
 				}
 			});

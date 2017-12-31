@@ -46,7 +46,6 @@ public class PlayScreen implements Screen {
 
 		Player player = new Player(32, 32);
 		players.put(game.client.getID(), player);
-		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
 	}
 
@@ -125,8 +124,10 @@ public class PlayScreen implements Screen {
 
 	// Only add a player if their number isn't in the player map
 	public void addPlayer(Player player) {
-		if (!players.containsKey((int) player.getPlayerNumber()))
+		if (!players.containsKey((int) player.getPlayerNumber())) {
 			players.put((int) player.getPlayerNumber(), player);
+			System.out.println("Adding player");
+		}
 	}
 
 	public HashMap<Integer, Player> getPlayers() {
@@ -149,12 +150,10 @@ public class PlayScreen implements Screen {
 
 		// Player stuff
 		for (Player player : players.values()) {
-
 			shipSprite.setRotation((float) Math.toDegrees(player.getDirectionInRads()));
 			shipSprite.setX(player.getX());
 			shipSprite.setY(player.getY());
 			shipSprite.draw(game.sb);
-
 		}
 
 		// Draw all the lasers
