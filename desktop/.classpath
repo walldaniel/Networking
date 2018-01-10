@@ -19,6 +19,5 @@
 	<classpathentry kind="lib" path="C:/Users/Daniel Wall/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput-platform/2.0.5/53f9c919f34d2ca9de8c51fc4e1e8282029a9232/jinput-platform-2.0.5-natives-osx.jar"/>
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/kryonet"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
