@@ -24,7 +24,7 @@ public class PlayScreen implements Screen {
 
 	private Texture laserTex;
 	private Sprite laserSprite;
-	
+
 	private Texture enemyTex;
 	private Sprite enemySprite;
 
@@ -35,6 +35,7 @@ public class PlayScreen implements Screen {
 	public Integer myPlayerindex;
 	private boolean moved;
 
+	
 	public PlayScreen(final Game game) {
 		this.game = game;
 
@@ -52,11 +53,11 @@ public class PlayScreen implements Screen {
 		lasers = new ArrayList<Laser>();
 		enemies = new ArrayList<Enemy>();
 		Player player = new Player(32, 32);
-		player.setPlayerNumber((short) game.client.getID()); 
-//		players.put(game.client.getID(), player);
+		player.setPlayerNumber((short) game.client.getID());
+		// players.put(game.client.getID(), player);
 		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
-		
+
 		game.client.sendTCP("GET_PLAYERS");
 	}
 
@@ -109,7 +110,7 @@ public class PlayScreen implements Screen {
 						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
 						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
 						players.get(myPlayerindex).getDirectionInRads()));
-				
+
 				game.client.sendTCP(lasers.get(lasers.size() - 1).toLaserStat());
 			}
 
@@ -122,11 +123,38 @@ public class PlayScreen implements Screen {
 				lasers.remove(i);
 		}
 
+		// Check if a laser hit an enemy
+		for (int i = 0; i < enemies.size(); i++) {
+			for (int j = 0; j < lasers.size(); j++) {
+				if (enemies.get(i).getX() < lasers.get(j).getX() + laserSprite.getWidth()
+						&& enemies.get(i).getX() + enemySprite.getWidth() < lasers.get(j).getX()) { // Check if inside x coords
+					if (enemies.get(i).getY() < lasers.get(j).getY() + laserSprite.getHeight()
+							&& enemies.get(i).getY() + enemySprite.getHeight() < lasers.get(j).getY()) {
+						lasers.remove(j);
+						enemies.remove(i);
+					}
+				}
+
+			}
+		}
+
 		// Update all the lasers position
 		for (int i = lasers.size() - 1; i >= 0; i--) {
 			lasers.get(i).update(dt);
 		}
 
+		// Check if the enemy has gone out of the screen
+		// Then move the enemy
+		for (int i = enemies.size() - 1; i >= 0; i--) {
+			if (enemies.get(i).getX() < -32 || enemies.get(i).getX() > Game.WIDTH + 32) {
+				if (enemies.get(i).getY() < -32 || enemies.get(i).getY() > Game.HEIGHT + 32) {
+					enemies.remove(i);
+				}
+			}
+
+			enemies.get(i).addX((float) (Enemy.SPEED * dt * Math.sin(enemies.get(i).getDirection())));
+			enemies.get(i).addY((float) (Enemy.SPEED * dt * Math.cos(enemies.get(i).getDirection())));
+		}
 	}
 
 	@Override
@@ -176,10 +204,10 @@ public class PlayScreen implements Screen {
 			laserSprite.setY(laser.getY());
 			laserSprite.draw(game.sb);
 		}
-		
-		for(Enemy enemy : enemies) {
-			enemySprite.setX(enemy.x);
-			enemySprite.setY(enemy.y);
+
+		for (Enemy enemy : enemies) {
+			enemySprite.setX(enemy.getX());
+			enemySprite.setY(enemy.getY());
 			enemySprite.draw(game.sb);
 		}
 

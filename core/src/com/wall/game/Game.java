@@ -61,12 +61,14 @@ public class Game extends com.badlogic.gdx.Game {
 					screen.addLaser((LaserStat) object);
 				}
 				if(object instanceof Enemy) {
-					screen.addEnemy((Enemy) object);
+					if(screen != null)
+						screen.addEnemy((Enemy) object);
 				}
 				if (object instanceof Player) {
 					// Add player to list of players
 //					Player player = (Player) object;
-					screen.addPlayer((Player) object);
+					if(screen != null)
+						screen.addPlayer((Player) object);
 				}
 				if (object instanceof Long) {
 					System.out.println(System.currentTimeMillis() - (Long) object);

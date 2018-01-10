@@ -58,15 +58,31 @@ public class DesktopLauncher {
 				}
 			});
 
+			// Every 1000ms send a new enemy to the clients
 			Timer time = new Timer();
-
 			time.schedule(new TimerTask() {
 
 				@Override
 				public void run() {
-					server.sendToAllTCP(new Enemy((float) Math.random() * Game.WIDTH, (float) Math.random() * Game.HEIGHT));
+					switch((int) (Math.random() * 4)) {
+					case 0:	// Left side
+						server.sendToAllTCP(new Enemy((float) Math.random() * 16, (float) Math.random() * Game.HEIGHT, Math.random() + 0.27));
+						break;
+					case 1:	// Right side
+						server.sendToAllTCP(new Enemy((float) Math.random() * 16 + Game.WIDTH, (float) Math.random() * Game.HEIGHT, Math.random() + 3.4));
+						break;
+					case 2:	// Top
+						server.sendToAllTCP(new Enemy((float) Math.random() * Game.WIDTH, (float) Math.random() * 16, Math.random() + 1.85));
+						break;
+					case 3:	// Bottom
+						server.sendToAllTCP(new Enemy((float) Math.random() * Game.WIDTH, (float) Math.random() * 16 + Game.HEIGHT, Math.random() - 0.27));
+						break;
+						default:	// If this somehow happens then don't spawn anything
+							break;
+					}
+					
 				}
-			}, 0, 1000);
+			}, 250, 1000);
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

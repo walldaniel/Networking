@@ -6,7 +6,7 @@ public class Laser {
 	public static final float REMOVAL_Y = Game.HEIGHT + 16;
 	
 	private final float speed = 1024f;
-	
+
 	private float x, y;
 	private double direction;	// in rads
 	
