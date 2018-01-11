@@ -1,4 +1,6 @@
-package com.wall.game;
+package com.wall.game.objects;
+
+import com.wall.game.Game;
 
 public class Laser {
 	

@@ -11,8 +11,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.wall.game.Laser.LaserStat;
-import com.wall.game.Player.PlayerStats;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Laser;
+import com.wall.game.objects.Player;
+import com.wall.game.objects.Laser.LaserStat;
+import com.wall.game.objects.Player.PlayerStats;
 
 public class PlayScreen implements Screen {
 
@@ -25,8 +30,10 @@ public class PlayScreen implements Screen {
 	private Texture laserTex;
 	private Sprite laserSprite;
 
-	private Texture enemyTex;
-	private Sprite enemySprite;
+	// private Texture enemyTex;
+	// private Sprite enemySprite;
+
+	private ShapeRenderer shapeRenderer;
 
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
@@ -35,7 +42,6 @@ public class PlayScreen implements Screen {
 	public Integer myPlayerindex;
 	private boolean moved;
 
-	
 	public PlayScreen(final Game game) {
 		this.game = game;
 
@@ -46,8 +52,10 @@ public class PlayScreen implements Screen {
 		shipSprite = new Sprite(shipTex);
 		laserTex = new Texture("laser.png");
 		laserSprite = new Sprite(laserTex);
-		enemyTex = new Texture("enemy.png");
-		enemySprite = new Sprite(enemyTex);
+		// enemyTex = new Texture("enemy.png");
+		// enemySprite = new Sprite(enemyTex);
+
+		shapeRenderer = new ShapeRenderer();
 
 		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
@@ -123,20 +131,21 @@ public class PlayScreen implements Screen {
 				lasers.remove(i);
 		}
 
-		// Check if a laser hit an enemy
-		for (int i = 0; i < enemies.size(); i++) {
-			for (int j = 0; j < lasers.size(); j++) {
-				if (enemies.get(i).getX() < lasers.get(j).getX() + laserSprite.getWidth()
-						&& enemies.get(i).getX() + enemySprite.getWidth() < lasers.get(j).getX()) { // Check if inside x coords
-					if (enemies.get(i).getY() < lasers.get(j).getY() + laserSprite.getHeight()
-							&& enemies.get(i).getY() + enemySprite.getHeight() < lasers.get(j).getY()) {
-						lasers.remove(j);
-						enemies.remove(i);
-					}
-				}
+		// // Check if a laser hit an enemy
+		// for (int i = 0; i < enemies.size(); i++) {
+		// for (int j = 0; j < lasers.size(); j++) {
+		// if (enemies.get(i).getX() < lasers.get(j).getX() + laserSprite.getWidth()
+		// && enemies.get(i).getX() + enemySprite.getWidth() < lasers.get(j).getX()) { // Check if inside x coords
+		// if (enemies.get(i).getY() < lasers.get(j).getY() + laserSprite.getHeight()
+		// && enemies.get(i).getY() + enemySprite.getHeight() < lasers.get(j).getY()) {
+		// lasers.remove(j);
+		// enemies.remove(i);
+		// }
+		// }
+		//
+		// }
+		// }
 
-			}
-		}
 
 		// Update all the lasers position
 		for (int i = lasers.size() - 1; i >= 0; i--) {
@@ -186,7 +195,6 @@ public class PlayScreen implements Screen {
 
 		camera.update();
 		game.sb.setProjectionMatrix(camera.combined);
-
 		game.sb.begin();
 
 		// Player stuff
@@ -197,21 +205,45 @@ public class PlayScreen implements Screen {
 			shipSprite.draw(game.sb);
 		}
 
+		game.sb.end();
+
+		camera.update();
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(1, 1, 1, 1);
+		
 		// Draw all the lasers
 		for (Laser laser : lasers) {
-			laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
-			laserSprite.setX(laser.getX());
-			laserSprite.setY(laser.getY());
-			laserSprite.draw(game.sb);
+//			laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
+//			laserSprite.setX(laser.getX());
+//			laserSprite.setY(laser.getY());
+//			laserSprite.draw(game.sb);
+			shapeRenderer.rect(laser.getX(), laser.getY(), laser.getX(), laser.getY(), 64f, 8f, 1f, 1f, (float) laser.getDirectionInRads());
 		}
 
-		for (Enemy enemy : enemies) {
-			enemySprite.setX(enemy.getX());
-			enemySprite.setY(enemy.getY());
-			enemySprite.draw(game.sb);
-		}
+		// for (Enemy enemy : enemies) {
+		// enemySprite.setX(enemy.getX());
+		// enemySprite.setY(enemy.getY());
+		// enemySprite.draw(game.sb);
+		// }
+		
+		
+//		for (int i = 0; i < enemies.size(); i++) {
+//			for (int j = 0; j < enemies.get(i).numVertices; j++) {
+//				if (j < enemies.get(i).numVertices - 1)
+//					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
+//							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
+//							enemies.get(i).getVertice(j + 1).x + enemies.get(i).getX(),
+//							enemies.get(i).getVertice(j + 1).y + enemies.get(i).getY());
+//				else
+//					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
+//							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
+//							enemies.get(i).getVertice(0).x + enemies.get(i).getX(),
+//							enemies.get(i).getVertice(0).y + enemies.get(i).getY());
+//			}
+//		}
 
-		game.sb.end();
+		shapeRenderer.end();
 	}
 
 	@Override

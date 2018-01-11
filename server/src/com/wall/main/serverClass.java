@@ -10,11 +10,12 @@ import java.util.TimerTask;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.wall.game.Enemy;
 import com.wall.game.Game;
-import com.wall.game.Player;
 import com.wall.game.RegisterClassesForServer;
-import com.wall.game.Laser.LaserStat;
+import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Player;
+import com.wall.game.objects.Vector2;
+import com.wall.game.objects.Laser.LaserStat;
 
 /*
  * Used to create a server to control the conections between players
@@ -57,13 +58,9 @@ public class serverClass {
 					server.sendToAllExceptTCP(connection.getID(), object);
 				}
 				if (object instanceof Player) {
-					// Send player what player number they are in the array
-					// connection.sendTCP(connection.getID()); <-- No longer needed because of
-					// client.getid
-
-					// Player player = (Player) object;
-					// player.setPlayerNumber((short) connection.getID());
-					server.sendToAllTCP((Player) object);
+					// This is called whenever a new player joins the game
+					// Send the player object to every connection
+					server.sendToAllTCP(object);
 				}
 			}
 		});
@@ -74,26 +71,9 @@ public class serverClass {
 
 			@Override
 			public void run() {
-				switch ((int) (Math.random() * 4)) {
-				case 0: // Left side
-					server.sendToAllTCP(new Enemy((float) Math.random() * 16, (float) Math.random() * Game.HEIGHT,
-							Math.random() + 0.27));
-					break;
-				case 1: // Right side
-					server.sendToAllTCP(new Enemy((float) Math.random() * 16 + Game.WIDTH,
-							(float) Math.random() * Game.HEIGHT, Math.random() + 3.4));
-					break;
-				case 2: // Top
-					server.sendToAllTCP(new Enemy((float) Math.random() * Game.WIDTH, (float) Math.random() * 16,
-							Math.random() + 1.85));
-					break;
-				case 3: // Bottom
-					server.sendToAllTCP(new Enemy((float) Math.random() * Game.WIDTH,
-							(float) Math.random() * 16 + Game.HEIGHT, Math.random() - 0.27));
-					break;
-				default: // If this somehow happens then don't spawn anything
-					break;
-				}
+				float[] x = { 0, 16, 2};
+				float[] y = { 0, 4, 22 };
+				server.sendToAllTCP(new Enemy((float) (Math.random() * 5f + 25), (float) (Math.random() * 5f + 25), 0, x, y));
 
 			}
 		}, 250, 1000);

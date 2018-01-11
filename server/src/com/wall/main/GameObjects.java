@@ -2,26 +2,37 @@ package com.wall.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
-import com.wall.game.Enemy;
-import com.wall.game.Laser;
-import com.wall.game.Player;
+import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Laser;
+import com.wall.game.objects.Player;
 
+/*
+ * Name: Daniel Wall
+ * Date: 2018-01-10
+ * Purpose: Used to store all the objects needed for a game
+ */
 public class GameObjects {
 
 	private Map<Integer, Player> players;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Laser> lasers;
 	
+	/*
+	 * Creates a new game object
+	 * Initializes all the data objects empty
+	 */
 	public GameObjects() {
 		players = new HashMap<Integer, Player>();
 		enemies = new ArrayList<Enemy>();
 		lasers = new ArrayList<Laser>();
 	}
 	
-	public void addPlayer(Player p, Integer num) {
+	public void addPlayer(Player p, Integer num) throws Exception {
+		if(players.containsKey(num))
+			throw new Exception();
+		
 		players.put(num, p);
 	}
 	public void addEnemy(Enemy e) {

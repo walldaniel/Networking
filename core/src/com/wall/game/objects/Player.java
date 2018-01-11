@@ -1,12 +1,16 @@
-package com.wall.game;
+package com.wall.game.objects;
+
+import com.badlogic.gdx.math.Polygon;
 
 public class Player {
-
+	
 	private short playerNumber;
 
 	private float x, y;
 	private double direction;
 
+	private Polygon shape;
+	
 	public Player(float x, float y) {
 		this.x = x;
 		this.y = y;

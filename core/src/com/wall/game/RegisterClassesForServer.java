@@ -1,20 +1,23 @@
 package com.wall.game;
 
+import com.badlogic.gdx.math.Polygon;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
-import com.wall.game.Laser.LaserStat;
+import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Laser;
+import com.wall.game.objects.Player;
+import com.wall.game.objects.Vector2;
+import com.wall.game.objects.Laser.LaserStat;
 
 public class RegisterClassesForServer {
 
 	public static void registerServer(Server server) {
-		Kryo kryo = server.getKryo();
-		registerClasses(kryo);
+		registerClasses(server.getKryo());
 	}
 	
 	public static void registerClient(Client client) {
-		Kryo kryo = client.getKryo();
-		registerClasses(kryo);
+		registerClasses(client.getKryo());
 	}
 	
 	private static void registerClasses(Kryo kryo) {
@@ -26,5 +29,9 @@ public class RegisterClassesForServer {
 		kryo.register(Laser.class);
 		kryo.register(LaserStat.class);
 		kryo.register(Enemy.class);
+		kryo.register(Vector2.class);
+		kryo.register(Vector2[].class);
+		kryo.register(Polygon.class);
+		kryo.register(float[].class);
 	}
 }
