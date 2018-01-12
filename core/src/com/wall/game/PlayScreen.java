@@ -117,7 +117,7 @@ public class PlayScreen implements Screen {
 				lasers.add(new Laser(
 						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
 						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
-						players.get(myPlayerindex).getDirectionInRads()));
+						(float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads())));
 
 				game.client.sendTCP(lasers.get(lasers.size() - 1).toLaserStat());
 			}
@@ -145,7 +145,6 @@ public class PlayScreen implements Screen {
 		//
 		// }
 		// }
-
 
 		// Update all the lasers position
 		for (int i = lasers.size() - 1; i >= 0; i--) {
@@ -211,14 +210,14 @@ public class PlayScreen implements Screen {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(1, 1, 1, 1);
-		
+
 		// Draw all the lasers
 		for (Laser laser : lasers) {
-//			laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
-//			laserSprite.setX(laser.getX());
-//			laserSprite.setY(laser.getY());
-//			laserSprite.draw(game.sb);
-			shapeRenderer.rect(laser.getX(), laser.getY(), laser.getX(), laser.getY(), 64f, 8f, 1f, 1f, (float) laser.getDirectionInRads());
+			// laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
+			// laserSprite.setX(laser.getX());
+			// laserSprite.setY(laser.getY());
+			// laserSprite.draw(game.sb);
+			shapeRenderer.polygon(laser.getShape().getVertices());
 		}
 
 		// for (Enemy enemy : enemies) {
@@ -226,22 +225,21 @@ public class PlayScreen implements Screen {
 		// enemySprite.setY(enemy.getY());
 		// enemySprite.draw(game.sb);
 		// }
-		
-		
-//		for (int i = 0; i < enemies.size(); i++) {
-//			for (int j = 0; j < enemies.get(i).numVertices; j++) {
-//				if (j < enemies.get(i).numVertices - 1)
-//					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
-//							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
-//							enemies.get(i).getVertice(j + 1).x + enemies.get(i).getX(),
-//							enemies.get(i).getVertice(j + 1).y + enemies.get(i).getY());
-//				else
-//					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
-//							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
-//							enemies.get(i).getVertice(0).x + enemies.get(i).getX(),
-//							enemies.get(i).getVertice(0).y + enemies.get(i).getY());
-//			}
-//		}
+
+		for (int i = 0; i < enemies.size(); i++) {
+			for (int j = 0; j < enemies.get(i).numVertices; j++) {
+				if (j < enemies.get(i).numVertices - 1)
+					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
+							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
+							enemies.get(i).getVertice(j + 1).x + enemies.get(i).getX(),
+							enemies.get(i).getVertice(j + 1).y + enemies.get(i).getY());
+				else
+					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
+							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
+							enemies.get(i).getVertice(0).x + enemies.get(i).getX(),
+							enemies.get(i).getVertice(0).y + enemies.get(i).getY());
+			}
+		}
 
 		shapeRenderer.end();
 	}

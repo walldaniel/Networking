@@ -3,6 +3,7 @@ package com.wall.main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,9 +72,27 @@ public class serverClass {
 
 			@Override
 			public void run() {
-				float[] x = { 0, 16, 2};
-				float[] y = { 0, 4, 22 };
-				server.sendToAllTCP(new Enemy((float) (Math.random() * 5f + 25), (float) (Math.random() * 5f + 25), 0, x, y));
+				float[] x;
+				float[] y;
+				switch((int) Math.random() * 3) {
+				case 0:
+					x = new float[4];
+					y = new float[4];
+					break;
+				case 1:
+					x = new float[5];
+					y = new float[5];
+					break;
+				case 2:
+					x = new float[6];
+					y = new float[6];
+					break;
+					default:
+						break;
+				}
+				
+				if(x != null)
+					server.sendToAllTCP(new Enemy((float) (Math.random() * 5f + 25), (float) (Math.random() * 5f + 25), Math.random() * 360, x, y));
 
 			}
 		}, 250, 1000);

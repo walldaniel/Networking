@@ -22,6 +22,7 @@ public class Enemy {
 	public Enemy(float x, float y, double direction, float[] xVer, float[] yVer) {
 		this.x = x;
 		this.y = y;
+		this.direction = direction;
 		
 		vertices = new Vector2[xVer.length];
 		for(int i = 0; i < xVer.length; i++) {

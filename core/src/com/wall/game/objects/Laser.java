@@ -1,60 +1,73 @@
 package com.wall.game.objects;
 
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.wall.game.Game;
 
 public class Laser {
-	
+
 	public static final float REMOVAL_X = Game.WIDTH + 160;
 	public static final float REMOVAL_Y = Game.HEIGHT + 16;
-	
+
+	public static final int WIDTH = 8;
+	public static final int HEIGHT = 64;
+
 	private final float speed = 1024f;
 
-	private float x, y;
-	private double direction;	// in rads
-	
-	public Laser(float x, float y, double d) {
-		this.x = x;
-		this.y = y;
+	private float direction; // in rads
+
+	private Polygon shape;
+
+	public Laser(float x, float y, float d) {
+		shape = new Polygon(new float[] { x, y, x + WIDTH, y, x + WIDTH, y + HEIGHT, x, x + HEIGHT });
+		shape.setOrigin(x + WIDTH / 2, y + HEIGHT / 2);
+		shape.setRotation(d);
+
 		this.direction = d;
 	}
-	
+
 	public Laser() {
-		
+
+	}
+
+	public Polygon getShape() {
+		return shape;
 	}
 	
 	public void update(float dt) {
-		x += -speed * dt * Math.sin(direction);
-		y += speed * dt * Math.cos(direction);
+		shape.setPosition((float) (shape.getX() + (-speed * dt * Math.sin(direction))),
+				(float) (shape.getY() + (speed * dt * Math.cos(direction))));
+		System.out.println(shape.getX() + " - " + shape.getY());
 	}
-	
+
 	public double getDirectionInRads() {
-		return direction;
+		return shape.getRotation();
 	}
-	
+
 	public float getX() {
-		return x;
+		return shape.getX();
 	}
-	
+
 	public float getY() {
-		return y;
+		return shape.getY();
 	}
-	
+
 	public static class LaserStat {
 		public float x, y;
-		public double direction;
-		
-		public LaserStat(float x, float y, double direction) {
+		public float direction;
+
+		public LaserStat(float x, float y, float direction) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
 		}
-		
+
 		public LaserStat() {
-			
+
 		}
 	}
 
 	public LaserStat toLaserStat() {
-		return new LaserStat(x, y, direction);
+		return new LaserStat(shape.getX(), shape.getY(), direction);
 	}
 }
