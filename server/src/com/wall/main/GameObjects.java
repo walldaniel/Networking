@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
 
@@ -16,7 +16,7 @@ import com.wall.game.objects.Player;
 public class GameObjects {
 
 	private Map<Integer, Player> players;
-	private ArrayList<Enemy> enemies;
+	private ArrayList<Asteroid> enemies;
 	private ArrayList<Laser> lasers;
 	
 	/*
@@ -25,7 +25,7 @@ public class GameObjects {
 	 */
 	public GameObjects() {
 		players = new HashMap<Integer, Player>();
-		enemies = new ArrayList<Enemy>();
+		enemies = new ArrayList<Asteroid>();
 		lasers = new ArrayList<Laser>();
 	}
 	
@@ -35,7 +35,7 @@ public class GameObjects {
 		
 		players.put(num, p);
 	}
-	public void addEnemy(Enemy e) {
+	public void addEnemy(Asteroid e) {
 		enemies.add(e);
 	}
 	public void addLaser(Laser l) {

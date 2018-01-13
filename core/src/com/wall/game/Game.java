@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Player;
 import com.wall.game.objects.Laser.LaserStat;
 import com.wall.game.objects.Player.PlayerStats;
@@ -62,9 +62,9 @@ public class Game extends com.badlogic.gdx.Game {
 				if(object instanceof LaserStat) {
 					screen.addLaser((LaserStat) object);
 				}
-				if(object instanceof Enemy) {
+				if(object instanceof Asteroid) {
 					if(screen != null)
-						screen.addEnemy((Enemy) object);
+						screen.addEnemy((Asteroid) object);
 				}
 				if (object instanceof Player) {
 					// Add player to list of players

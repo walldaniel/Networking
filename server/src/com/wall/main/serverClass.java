@@ -13,7 +13,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.wall.game.Game;
 import com.wall.game.RegisterClassesForServer;
-import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Player;
 import com.wall.game.objects.Vector2;
 import com.wall.game.objects.Laser.LaserStat;
@@ -25,16 +25,16 @@ public class serverClass {
 
 	// Got from: https://groups.google.com/forum/#!topic/kryonet-users/lxicKGTFcu4, username: dannyG82
 	public static String getIp() throws Exception {
-		for(NetworkInterface iFace : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-			for(InetAddress address : Collections.list(iFace.getInetAddresses())) {
-				if(!address.isLoopbackAddress() && !address.isLinkLocalAddress())
+		for (NetworkInterface iFace : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+			for (InetAddress address : Collections.list(iFace.getInetAddresses())) {
+				if (!address.isLoopbackAddress() && !address.isLinkLocalAddress())
 					return address.getHostAddress().trim();
 			}
 		}
-		
+
 		return "unknown";
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		final Server server = new Server();
 		server.start();
@@ -72,28 +72,7 @@ public class serverClass {
 
 			@Override
 			public void run() {
-				float[] x;
-				float[] y;
-				switch((int) Math.random() * 3) {
-				case 0:
-					x = new float[4];
-					y = new float[4];
-					break;
-				case 1:
-					x = new float[5];
-					y = new float[5];
-					break;
-				case 2:
-					x = new float[6];
-					y = new float[6];
-					break;
-					default:
-						break;
-				}
-				
-				if(x != null)
-					server.sendToAllTCP(new Enemy((float) (Math.random() * 5f + 25), (float) (Math.random() * 5f + 25), Math.random() * 360, x, y));
-
+				server.sendToAllTCP(new Asteroid((float) (Math.random() * 600), -5, Math.random() * 365, 63, (int) (Math.random() * 3 + 4)));
 			}
 		}, 250, 1000);
 

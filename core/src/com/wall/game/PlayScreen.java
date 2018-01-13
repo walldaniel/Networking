@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.wall.game.objects.Enemy;
+import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
 import com.wall.game.objects.Laser.LaserStat;
@@ -37,7 +37,7 @@ public class PlayScreen implements Screen {
 
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
-	private ArrayList<Enemy> enemies;
+	private ArrayList<Asteroid> enemies;
 
 	public Integer myPlayerindex;
 	private boolean moved;
@@ -59,7 +59,7 @@ public class PlayScreen implements Screen {
 
 		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
-		enemies = new ArrayList<Enemy>();
+		enemies = new ArrayList<Asteroid>();
 		Player player = new Player(32, 32);
 		player.setPlayerNumber((short) game.client.getID());
 		// players.put(game.client.getID(), player);
@@ -160,8 +160,8 @@ public class PlayScreen implements Screen {
 				}
 			}
 
-			enemies.get(i).addX((float) (Enemy.SPEED * dt * Math.sin(enemies.get(i).getDirection())));
-			enemies.get(i).addY((float) (Enemy.SPEED * dt * Math.cos(enemies.get(i).getDirection())));
+			enemies.get(i).addX((float) (Asteroid.SPEED * dt * Math.sin(enemies.get(i).getDirection())));
+			enemies.get(i).addY((float) (Asteroid.SPEED * dt * Math.cos(enemies.get(i).getDirection())));
 		}
 	}
 
@@ -285,7 +285,7 @@ public class PlayScreen implements Screen {
 		lasers.add(new Laser(laser.x, laser.y, laser.direction));
 	}
 
-	public void addEnemy(Enemy enemy) {
+	public void addEnemy(Asteroid enemy) {
 		enemies.add(enemy);
 	}
 
