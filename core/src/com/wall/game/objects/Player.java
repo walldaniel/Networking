@@ -1,24 +1,31 @@
 package com.wall.game.objects;
 
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 
 public class Player {
 	
+	private final float[] VERTICES = { 0f, 0f, 16f, 32f, 32f, 0f, 16f, 8f };
+	
 	private short playerNumber;
-
-	private float x, y;
-	private double direction;
 
 	private Polygon shape;
 	
+	private Vector2 forces;
+	private float rotationalForce;	// +ve is right
+	
 	public Player(float x, float y) {
-		this.x = x;
-		this.y = y;
-		direction = 0;
+		shape = new Polygon(VERTICES);
+		shape.setPosition(x, y);
+		shape.setOrigin(x, y);
+		shape.setRotation(0);
+		
+		forces = new Vector2(0f, 0f);
+		rotationalForce = 0f;
 	}
 
 	public Player() {
-
+		
 	}
 
 	public void setPlayerNumber(short playerNumber) {
@@ -29,48 +36,72 @@ public class Player {
 		return playerNumber;
 	}
 
-	public void setX(float x) {
-		this.x = x;
+	public Polygon getShip() {
+		return shape;
+	}
+	
+	public void setDirection(float degrees) {
+		shape.setRotation(degrees);
+	}
+	public void setPosition(float x, float y) {
+		shape.setPosition(x, y);
+	}
+	
+	// Update the position of the ship based on the forces applied to it
+	public void update() {
+		System.out.println(forces.x + " - " + forces.y);
+		
+		shape.translate(forces.x, forces.y);
+		shape.rotate(rotationalForce);
+		
+		// Decrease the force on the ship
+		forces.x *= 0.95f;
+		forces.y *= 0.95f;
+		rotationalForce *= 0.85f;
+	}
+	
+	// A force either forward or backwards
+	public void addForceForward(float force) {
+		if(forces.x < 3f) {
+			forces.x += force * (float) Math.sin(Math.toRadians(shape.getRotation()));
+		}
+		if(forces.y < 3f) {
+			forces.y += force * (float) Math.cos(Math.toRadians(shape.getRotation()));
+		}
+	}
+	// A force either left or right
+	public void addRotationalForce(float force) {
+		if(rotationalForce < 10f && rotationalForce > -10f) {
+			rotationalForce += force;
+		}
+	}
+	
+	public void adddPosition(float x, float y) {
+		shape.setPosition(shape.getX() + x, shape.getY() + y);
 	}
 
-	public void setY(float y) {
-		this.y = y;
-	}
-
-	public void setDirection(double d) {
-		this.direction = d;
-	}
-
-	public void addX(float x) {
-		this.x += x;
-	}
-
-	public void addY(float y) {
-		this.y += y;
-	}
-
-	public void addDirection(double d) {
-		this.direction += d;
+	public void addDirection(float degrees) {
+		shape.rotate(degrees);
 	}
 
 	public float getX() {
-		return x;
+		return shape.getX();
 	}
 
 	public float getY() {
-		return y;
+		return shape.getY();
 	}
 
-	public double getDirectionInRads() {
-		return direction;
+	public float getDirectionInDegrees() {
+		return shape.getRotation();
 	}
 
 	public static class PlayerStats {
 		public float x, y;
-		public double direction;
+		public float direction;
 		public short index;
 
-		public PlayerStats(float x, float y, double direction, short index) {
+		public PlayerStats(float x, float y, float direction, short index) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
@@ -88,7 +119,7 @@ public class Player {
 			try {
 				x = Float.parseFloat(data[0]);
 				y = Float.parseFloat(data[1]);
-				direction = Double.parseDouble(data[2]);
+				direction = Float.parseFloat(data[2]);
 				index = Short.parseShort(data[3]);
 			} catch (NumberFormatException e) {
 				System.out.println("Error reading the player data");

@@ -24,8 +24,8 @@ public class PlayScreen implements Screen {
 	final Game game;
 	private OrthographicCamera camera;
 
-	private Texture shipTex;
-	private Sprite shipSprite;
+	// private Texture shipTex;
+	// private Sprite shipSprite;
 
 	private Texture laserTex;
 	private Sprite laserSprite;
@@ -37,19 +37,19 @@ public class PlayScreen implements Screen {
 
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
-	private ArrayList<Asteroid> enemies;
+	private ArrayList<Asteroid> asteroids;
 
 	public Integer myPlayerindex;
 	private boolean moved;
 
-	public PlayScreen(final Game game) {
+	public PlayScreen(final Game game, int myPlayerIndex) {
 		this.game = game;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 
-		shipTex = new Texture("ship.png");
-		shipSprite = new Sprite(shipTex);
+		// shipTex = new Texture("ship.png");
+		// shipSprite = new Sprite(shipTex);
 		laserTex = new Texture("laser.png");
 		laserSprite = new Sprite(laserTex);
 		// enemyTex = new Texture("enemy.png");
@@ -59,10 +59,10 @@ public class PlayScreen implements Screen {
 
 		players = new HashMap<Integer, Player>();
 		lasers = new ArrayList<Laser>();
-		enemies = new ArrayList<Asteroid>();
+		asteroids = new ArrayList<Asteroid>();
 		Player player = new Player(32, 32);
 		player.setPlayerNumber((short) game.client.getID());
-		// players.put(game.client.getID(), player);
+		players.put(game.client.getID(), player);
 		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
 
@@ -70,59 +70,38 @@ public class PlayScreen implements Screen {
 	}
 
 	public void update(float dt) {
-		// new turn so hasn't moved yet
-		moved = false;
-
 		// Get the user input
 		if (myPlayerindex != null && players.containsKey(myPlayerindex)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-				players.get(myPlayerindex).addDirection(dt * 8f);
-				moved = true;
+				players.get(myPlayerindex).addRotationalForce(dt * 10f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-				players.get(myPlayerindex).addDirection(-dt * 8f);
-				moved = true;
+				players.get(myPlayerindex).addRotationalForce(-dt * 10f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-				players.get(myPlayerindex).addX(
-						-8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
-				players.get(myPlayerindex).addY(
-						8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
-				moved = true;
+				players.get(myPlayerindex).addForceForward(dt * 6f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-				players.get(myPlayerindex).addX(
-						8f * dt * (float) Math.toDegrees(Math.sin(players.get(myPlayerindex).getDirectionInRads())));
-				players.get(myPlayerindex).addY(
-						-8f * dt * (float) Math.toDegrees(Math.cos(players.get(myPlayerindex).getDirectionInRads())));
-				moved = true;
+				players.get(myPlayerindex).addForceForward(-dt * 6f);
 			}
-
-			// Send the data to the server only if the player has moved
-			// TODO: if the laggy send in better format such as byte array
-			if (moved) {
-				game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(),
-						players.get(myPlayerindex).getY(), players.get(myPlayerindex).getDirectionInRads(),
-						players.get(myPlayerindex).getPlayerNumber()).sendTcp());
-			}
-
-			// Used to get the front of the ship
-			// TODO: Change this to something better
-			shipSprite.setRotation((float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads()));
-			shipSprite.setX(players.get(myPlayerindex).getX());
-			shipSprite.setY(players.get(myPlayerindex).getY());
 
 			// If the space bar is pressed launch new bullet at the center of the sprite
+			// TODO: fix the lasers from ship
 			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-				lasers.add(new Laser(
-						(shipSprite.getVertices()[SpriteBatch.X2] + shipSprite.getVertices()[SpriteBatch.X3]) / 2f,
-						(shipSprite.getVertices()[SpriteBatch.Y2] + shipSprite.getVertices()[SpriteBatch.Y3]) / 2f,
-						(float) Math.toDegrees(players.get(myPlayerindex).getDirectionInRads())));
 
-				game.client.sendTCP(lasers.get(lasers.size() - 1).toLaserStat());
 			}
 
 		}
+
+		// Update the location of the ships
+		players.get(myPlayerindex).update();
+
+		// Send clients ship location to server
+		// TODO: Make it so only if the position is changed that it sends data
+		game.client.sendTCP(new Player.PlayerStats(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+				players.get(myPlayerindex).getDirectionInDegrees(), players.get(myPlayerindex).getPlayerNumber())
+						.sendTcp());
+
 		// Check if a laser has exited the screen
 		// TODO: make removal of lasers more efficient
 		for (int i = lasers.size() - 1; i >= 0; i--) {
@@ -131,21 +110,6 @@ public class PlayScreen implements Screen {
 				lasers.remove(i);
 		}
 
-		// // Check if a laser hit an enemy
-		// for (int i = 0; i < enemies.size(); i++) {
-		// for (int j = 0; j < lasers.size(); j++) {
-		// if (enemies.get(i).getX() < lasers.get(j).getX() + laserSprite.getWidth()
-		// && enemies.get(i).getX() + enemySprite.getWidth() < lasers.get(j).getX()) { // Check if inside x coords
-		// if (enemies.get(i).getY() < lasers.get(j).getY() + laserSprite.getHeight()
-		// && enemies.get(i).getY() + enemySprite.getHeight() < lasers.get(j).getY()) {
-		// lasers.remove(j);
-		// enemies.remove(i);
-		// }
-		// }
-		//
-		// }
-		// }
-
 		// Update all the lasers position
 		for (int i = lasers.size() - 1; i >= 0; i--) {
 			lasers.get(i).update(dt);
@@ -153,15 +117,15 @@ public class PlayScreen implements Screen {
 
 		// Check if the enemy has gone out of the screen
 		// Then move the enemy
-		for (int i = enemies.size() - 1; i >= 0; i--) {
-			if (enemies.get(i).getX() < -32 || enemies.get(i).getX() > Game.WIDTH + 32) {
-				if (enemies.get(i).getY() < -32 || enemies.get(i).getY() > Game.HEIGHT + 32) {
-					enemies.remove(i);
+		for (int i = asteroids.size() - 1; i >= 0; i--) {
+			if (asteroids.get(i).getX() < -32 || asteroids.get(i).getX() > Game.WIDTH + 32) {
+				if (asteroids.get(i).getY() < -32 || asteroids.get(i).getY() > Game.HEIGHT + 32) {
+					asteroids.remove(i);
 				}
 			}
 
-			enemies.get(i).addX((float) (Asteroid.SPEED * dt * Math.sin(enemies.get(i).getDirection())));
-			enemies.get(i).addY((float) (Asteroid.SPEED * dt * Math.cos(enemies.get(i).getDirection())));
+			asteroids.get(i).addX((float) (Asteroid.SPEED * dt * Math.sin(asteroids.get(i).getDirection())));
+			asteroids.get(i).addY((float) (Asteroid.SPEED * dt * Math.cos(asteroids.get(i).getDirection())));
 		}
 	}
 
@@ -193,23 +157,14 @@ public class PlayScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
-		game.sb.setProjectionMatrix(camera.combined);
-		game.sb.begin();
-
-		// Player stuff
-		for (Player player : players.values()) {
-			shipSprite.setRotation((float) Math.toDegrees(player.getDirectionInRads()));
-			shipSprite.setX(player.getX());
-			shipSprite.setY(player.getY());
-			shipSprite.draw(game.sb);
-		}
-
-		game.sb.end();
-
-		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(1, 1, 1, 1);
+
+		// Player stuff
+		for (Player player : players.values()) {
+			shapeRenderer.polygon(player.getShip().getTransformedVertices());
+		}
 
 		// Draw all the lasers
 		for (Laser laser : lasers) {
@@ -226,18 +181,18 @@ public class PlayScreen implements Screen {
 		// enemySprite.draw(game.sb);
 		// }
 
-		for (int i = 0; i < enemies.size(); i++) {
-			for (int j = 0; j < enemies.get(i).numVertices; j++) {
-				if (j < enemies.get(i).numVertices - 1)
-					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
-							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
-							enemies.get(i).getVertice(j + 1).x + enemies.get(i).getX(),
-							enemies.get(i).getVertice(j + 1).y + enemies.get(i).getY());
+		for (int i = 0; i < asteroids.size(); i++) {
+			for (int j = 0; j < asteroids.get(i).numVertices; j++) {
+				if (j < asteroids.get(i).numVertices - 1)
+					shapeRenderer.line(asteroids.get(i).getVertice(j).x + asteroids.get(i).getX(),
+							asteroids.get(i).getVertice(j).y + asteroids.get(i).getY(),
+							asteroids.get(i).getVertice(j + 1).x + asteroids.get(i).getX(),
+							asteroids.get(i).getVertice(j + 1).y + asteroids.get(i).getY());
 				else
-					shapeRenderer.line(enemies.get(i).getVertice(j).x + enemies.get(i).getX(),
-							enemies.get(i).getVertice(j).y + enemies.get(i).getY(),
-							enemies.get(i).getVertice(0).x + enemies.get(i).getX(),
-							enemies.get(i).getVertice(0).y + enemies.get(i).getY());
+					shapeRenderer.line(asteroids.get(i).getVertice(j).x + asteroids.get(i).getX(),
+							asteroids.get(i).getVertice(j).y + asteroids.get(i).getY(),
+							asteroids.get(i).getVertice(0).x + asteroids.get(i).getX(),
+							asteroids.get(i).getVertice(0).y + asteroids.get(i).getY());
 			}
 		}
 
@@ -270,14 +225,14 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		shipTex.dispose();
+		shapeRenderer.dispose();
+		// shipTex.dispose();
 	}
 
 	public void updatePlayerPos(PlayerStats playerStats) {
 		if (players.containsKey((int) playerStats.index)) {
 			players.get((int) playerStats.index).setDirection(playerStats.direction);
-			players.get((int) playerStats.index).setX(playerStats.x);
-			players.get((int) playerStats.index).setY(playerStats.y);
+			players.get((int) playerStats.index).setPosition(playerStats.x, playerStats.y);
 		}
 	}
 
@@ -286,7 +241,7 @@ public class PlayScreen implements Screen {
 	}
 
 	public void addEnemy(Asteroid enemy) {
-		enemies.add(enemy);
+		asteroids.add(enemy);
 	}
 
 }

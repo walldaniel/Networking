@@ -33,5 +33,6 @@ public class RegisterClassesForServer {
 		kryo.register(Vector2[].class);
 		kryo.register(Polygon.class);
 		kryo.register(float[].class);
+		kryo.register(com.badlogic.gdx.math.Vector2.class);
 	}
 }

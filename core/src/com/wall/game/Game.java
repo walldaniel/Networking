@@ -82,8 +82,7 @@ public class Game extends com.badlogic.gdx.Game {
 //		screen.myPlayerindex = client.getID();
 
 		sb = new SpriteBatch();
-
-		screen = new PlayScreen(this);
+		screen = new PlayScreen(this, client.getID());
 		this.setScreen(screen);
 
 	}

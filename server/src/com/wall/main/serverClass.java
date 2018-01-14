@@ -51,7 +51,7 @@ public class serverClass {
 					} else {
 						// PlayerStats ps = new PlayerStats((String) object);
 						// System.out.println(ps.x + " - " + ps.y);
-						System.out.println(connection.getID());
+//						System.out.println(connection.getID());
 						server.sendToAllExceptTCP(connection.getID(), object);
 					}
 				}
