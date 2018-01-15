@@ -1,20 +1,24 @@
 package com.wall.game.objects;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.wall.game.Game;
+
 public class Asteroid {
 
 	public static float SPEED = 64f;
 
 	private float x, y;
-	private double direction;
+	private float direction;
 
 	private Vector2[] vertices;
 	public final int numVertices;
 
 	// Main constructor
-	public Asteroid(float x, float y, double direction, int size, int numVertices) {
+	public Asteroid(float x, float y, float direction, int size, int numVertices) {
 		this.numVertices = numVertices;
 		this.x = x;
 		this.y = y;
+		this.direction = direction;
 
 		vertices = new Vector2[numVertices];
 
@@ -71,6 +75,21 @@ public class Asteroid {
 		numVertices = -1;
 	}
 
+	// Update the position of the asteroid
+	// Returns true if out of bounds, so that it can be deleted
+	public boolean update(float dt) {
+		// Update the position of asteroid
+		x += dt * 64f * MathUtils.sinDeg(direction);
+		y += dt * 64f * MathUtils.cosDeg(direction);
+
+		// Check if asteroid is out of bounds
+		if (x < -64f || x > Game.WIDTH + 64f || y < -64f || y > Game.HEIGHT + 64f) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public Vector2 getVertice(int i) {
 		return vertices[i];
 	}
@@ -83,7 +102,7 @@ public class Asteroid {
 		this.y = y;
 	}
 
-	public void setDirection(double d) {
+	public void setDirection(float d) {
 		this.direction = d;
 	}
 
@@ -95,7 +114,7 @@ public class Asteroid {
 		return y;
 	}
 
-	public double getDirection() {
+	public float getDirection() {
 		return direction;
 	}
 

@@ -25,8 +25,8 @@ public class PlayScreen implements Screen {
 	// private Texture shipTex;
 	// private Sprite shipSprite;
 
-//	private Texture laserTex;
-//	private Sprite laserSprite;
+	// private Texture laserTex;
+	// private Sprite laserSprite;
 
 	// private Texture enemyTex;
 	// private Sprite enemySprite;
@@ -36,7 +36,7 @@ public class PlayScreen implements Screen {
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
 	private ArrayList<Asteroid> asteroids;
-	
+
 	public Integer myPlayerindex;
 
 	public PlayScreen(final Game game, int myPlayerIndex) {
@@ -47,8 +47,8 @@ public class PlayScreen implements Screen {
 
 		// shipTex = new Texture("ship.png");
 		// shipSprite = new Sprite(shipTex);
-//		laserTex = new Texture("laser.png");
-//		laserSprite = new Sprite(laserTex);
+		// laserTex = new Texture("laser.png");
+		// laserSprite = new Sprite(laserTex);
 		// enemyTex = new Texture("enemy.png");
 		// enemySprite = new Sprite(enemyTex);
 
@@ -112,20 +112,16 @@ public class PlayScreen implements Screen {
 			lasers.get(i).update(dt);
 		}
 
-		// Check if the enemy has gone out of the screen
-		// Then move the enemy
-		for (int i = asteroids.size() - 1; i >= 0; i--) {
-			if (asteroids.get(i).getX() < -32 || asteroids.get(i).getX() > Game.WIDTH + 32) {
-				if (asteroids.get(i).getY() < -32 || asteroids.get(i).getY() > Game.HEIGHT + 32) {
-					asteroids.remove(i);
-				}
-			}
+		// Update all the asteroids
+		for (int i = 0; i < asteroids.size(); i++) {
+			// Also checks if the asteroid is out of bounds to delete it
+			if (asteroids.get(i).update(dt)) {
+				asteroids.remove(i);
 
-			asteroids.get(i).addX((float) (Asteroid.SPEED * dt * Math.sin(asteroids.get(i).getDirection())));
-			asteroids.get(i).addY((float) (Asteroid.SPEED * dt * Math.cos(asteroids.get(i).getDirection())));
+				// If the asteroid is removed make sure that you noe check the current i by decrementing it
+				i--;
+			}
 		}
-		
-		System.out.println(players.get(myPlayerindex).getDirectionInDegrees());
 	}
 
 	@Override
@@ -166,14 +162,16 @@ public class PlayScreen implements Screen {
 		}
 
 		// Draw all the lasers
-//		for (Laser laser : lasers) {
-//			// laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
-//			// laserSprite.setX(laser.getX());
-//			// laserSprite.setY(laser.getY());
-//			// laserSprite.draw(game.sb);
-////			shapeRenderer.polygon(laser.getShape().getVertices());
-//		}
+		// for (Laser laser : lasers) {
+		// // laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
+		// // laserSprite.setX(laser.getX());
+		// // laserSprite.setY(laser.getY());
+		// // laserSprite.draw(game.sb);
+		//// shapeRenderer.polygon(laser.getShape().getVertices());
+		// }
 
+		// Draw the asteroid with lines between each vertice
+		// The last line has to be drawn from last vertice to first to complete the shape
 		for (int i = 0; i < asteroids.size(); i++) {
 			for (int j = 0; j < asteroids.get(i).numVertices; j++) {
 				if (j < asteroids.get(i).numVertices - 1)

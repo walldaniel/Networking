@@ -51,7 +51,7 @@ public class serverClass {
 					} else {
 						// PlayerStats ps = new PlayerStats((String) object);
 						// System.out.println(ps.x + " - " + ps.y);
-//						System.out.println(connection.getID());
+						// System.out.println(connection.getID());
 						server.sendToAllExceptTCP(connection.getID(), object);
 					}
 				}
@@ -72,7 +72,27 @@ public class serverClass {
 
 			@Override
 			public void run() {
-				server.sendToAllTCP(new Asteroid((float) (Math.random() * 600), -5, Math.random() * 365, 63, (int) (Math.random() * 3 + 4)));
+
+				// Randomly choose which side to generate the asteroid on
+				// TODO: Have the asteroid spawn with a direction towards the player
+				switch ((int) (Math.random() * 4)) {
+				case 0: // left
+					server.sendToAllTCP(new Asteroid(-16, (float) Math.random() * Game.HEIGHT,
+							(float) (Math.random() * 90 + 45), 63, (int) (Math.random() * 3 + 4)));
+					break;
+				case 1: // right
+					server.sendToAllTCP(new Asteroid(Game.WIDTH + 16f, (float) Math.random() * Game.HEIGHT,
+							(float) (Math.random() * 90 + 225), 63, (int) (Math.random() * 3 + 4)));
+					break;
+				case 2: // top
+					server.sendToAllTCP(new Asteroid((float) Math.random() * Game.WIDTH, Game.HEIGHT + 16f,
+							(float) (Math.random() * 90 + 135), 63, (int) (Math.random() * 3 + 4)));
+					break;
+				case 3: // bottom
+					server.sendToAllTCP(new Asteroid((float) Math.random() * Game.WIDTH, -16f,
+							(float) (Math.random() * 90 + 305), 63, (int) (Math.random() * 3 + 4)));
+					break;
+				}
 			}
 		}, 250, 1000);
 
