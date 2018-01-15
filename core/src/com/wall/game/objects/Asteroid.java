@@ -10,14 +10,17 @@ public class Asteroid {
 	private Vector2[] vertices;
 	public final int numVertices;
 
+	// Main constructor
 	public Asteroid(float x, float y, double direction, int size, int numVertices) {
 		this.numVertices = numVertices;
 		this.x = x;
 		this.y = y;
 
 		vertices = new Vector2[numVertices];
+
+		// Generates an asteroid with random vertices with lines connected between them
 		switch (numVertices) {
-		case 4: // 4 vertices
+		case 4: // 4 vertices or sides, etc..
 			vertices[0] = new Vector2((float) (Math.random() * (size / 2) - 8),
 					(float) (Math.random() * (size / 2) - 8));
 			vertices[1] = new Vector2((float) (Math.random() * (size / 2) + 8) + (size / 2),
@@ -27,6 +30,17 @@ public class Asteroid {
 			vertices[2] = new Vector2((float) (Math.random() * (size / 2) + 8) + (size / 2),
 					(float) (Math.random() * (size / 2) + 8) + (size / 2));
 			break;
+		case 5:
+			vertices[0] = new Vector2((float) (Math.random() * (size / 3)), (float) (Math.random() * size / 2 - 8));
+			vertices[1] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)),
+					(float) (Math.random() * size / 2 - 8));
+			vertices[2] = new Vector2((float) (Math.random() * (size / 3)) + (2 * size / 3),
+					(float) (Math.random() * size));
+			vertices[3] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)),
+					(float) (Math.random() * size / 2 + (size / 2)));
+			vertices[4] = new Vector2((float) (Math.random() * (size / 3)),
+					(float) (Math.random() * size / 2 - 8) + (size / 2));
+			break;
 		case 6:
 			vertices[0] = new Vector2((float) (Math.random() * (size / 4)), (float) (Math.random() * size / 2 - 8));
 			vertices[1] = new Vector2((float) (Math.random() * (size / 4) + (size / 3)),
@@ -35,15 +49,10 @@ public class Asteroid {
 					(float) (Math.random() * size / 2 - 8));
 			vertices[3] = new Vector2((float) (Math.random() * (size / 4) + (size / 1.5)),
 					(float) (Math.random() * size / 2 + (size / 2 + 8)));
-			vertices[4] = new Vector2((float) (Math.random() * (size / 4) + (size / 3)), (float) (Math.random() * size / 2 + (size / 2 + 8)));
-			vertices[5] = new Vector2((float) (Math.random() * size / 4), (float) (Math.random() * size / 2 + (size / 2 + 8)));
-			break;
-		case 5:
-			vertices[0] = new Vector2((float) (Math.random() * (size / 3)), (float) (Math.random() * size / 2 - 8));
-			vertices[1] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)), (float) (Math.random() * size / 2 - 8));
-			vertices[2] = new Vector2((float) (Math.random() * (size / 3)) + (2 * size / 3), (float) (Math.random() * size));
-			vertices[3] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)), (float) (Math.random() * size / 2 + (size / 2)));
-			vertices[4] = new Vector2((float) (Math.random() * (size / 3)), (float) (Math.random() * size / 2 - 8) + (size/2));
+			vertices[4] = new Vector2((float) (Math.random() * (size / 4) + (size / 3)),
+					(float) (Math.random() * size / 2 + (size / 2 + 8)));
+			vertices[5] = new Vector2((float) (Math.random() * size / 4),
+					(float) (Math.random() * size / 2 + (size / 2 + 8)));
 			break;
 		default:
 			System.out.println("Error");
@@ -56,18 +65,6 @@ public class Asteroid {
 
 		this.vertices = vertices;
 		this.numVertices = vertices.length;
-	}
-
-	public Asteroid(float x, float y, double direction, float[] xVer, float[] yVer) {
-		this.x = x;
-		this.y = y;
-		this.direction = direction;
-
-		vertices = new Vector2[xVer.length];
-		for (int i = 0; i < xVer.length; i++) {
-			vertices[i] = new Vector2(xVer[i], yVer[i]);
-		}
-		numVertices = vertices.length;
 	}
 
 	public Asteroid() {

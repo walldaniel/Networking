@@ -16,12 +16,12 @@ public class Laser {
 
 	private float direction; // in rads
 
-	private Polygon shape;
+	private float x;
+	private float y;
 
 	public Laser(float x, float y, float d) {
-		shape = new Polygon(new float[] { x, y, x + WIDTH, y, x + WIDTH, y + HEIGHT, x, x + HEIGHT });
-		shape.setOrigin(x + WIDTH / 2, y + HEIGHT / 2);
-		shape.setRotation(d);
+		this.x = x;
+		this.y = y;
 
 		this.direction = d;
 	}
@@ -29,27 +29,23 @@ public class Laser {
 	public Laser() {
 
 	}
-
-	public Polygon getShape() {
-		return shape;
-	}
 	
 	public void update(float dt) {
-		shape.setPosition((float) (shape.getX() + (-speed * dt * Math.sin(direction))),
-				(float) (shape.getY() + (speed * dt * Math.cos(direction))));
-		System.out.println(shape.getX() + " - " + shape.getY());
+//		shape.setPosition((float) (shape.getX() + (-speed * dt * Math.sin(direction))),
+//				(float) (shape.getY() + (speed * dt * Math.cos(direction))));
+//		System.out.println(shape.getX() + " - " + shape.getY());
 	}
 
 	public double getDirectionInRads() {
-		return shape.getRotation();
+		return direction;
 	}
 
 	public float getX() {
-		return shape.getX();
+		return x;
 	}
 
 	public float getY() {
-		return shape.getY();
+		return y;
 	}
 
 	public static class LaserStat {
@@ -68,6 +64,6 @@ public class Laser {
 	}
 
 	public LaserStat toLaserStat() {
-		return new LaserStat(shape.getX(), shape.getY(), direction);
+		return new LaserStat(x, y, direction);
 	}
 }

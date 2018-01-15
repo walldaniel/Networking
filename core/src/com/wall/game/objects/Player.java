@@ -1,31 +1,33 @@
 package com.wall.game.objects;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.wall.game.Game;
 
 public class Player {
-	
+
 	private final float[] VERTICES = { 0f, 0f, 16f, 32f, 32f, 0f, 16f, 8f };
-	
+
 	private short playerNumber;
 
 	private Polygon shape;
-	
+
 	private Vector2 forces;
-	private float rotationalForce;	// +ve is right
-	
+	private float rotationalForce; // +ve is right
+
 	public Player(float x, float y) {
 		shape = new Polygon(VERTICES);
 		shape.setPosition(x, y);
 		shape.setOrigin(x, y);
 		shape.setRotation(0);
-		
+
 		forces = new Vector2(0f, 0f);
 		rotationalForce = 0f;
 	}
 
 	public Player() {
-		
+
 	}
 
 	public void setPlayerNumber(short playerNumber) {
@@ -39,43 +41,60 @@ public class Player {
 	public Polygon getShip() {
 		return shape;
 	}
-	
+
 	public void setDirection(float degrees) {
 		shape.setRotation(degrees);
 	}
+
 	public void setPosition(float x, float y) {
 		shape.setPosition(x, y);
 	}
-	
+
 	// Update the position of the ship based on the forces applied to it
 	public void update() {
-		System.out.println(forces.x + " - " + forces.y);
-		
-		shape.translate(forces.x, forces.y);
+
 		shape.rotate(rotationalForce);
-		
+		shape.translate(forces.x, forces.y);
+
 		// Decrease the force on the ship
-		forces.x *= 0.95f;
-		forces.y *= 0.95f;
-		rotationalForce *= 0.85f;
+		forces.x *= 0.97f;
+		forces.y *= 0.97f;
+		rotationalForce *= 0.9f;
+		
+		// Check if out of bounds
+		// TODO: Edit this so that it depends on the rotation of the player
+		if(shape.getX() <= 0) {
+			shape.setPosition(0, shape.getY());
+			forces.x = 0;
+		}
+		if(shape.getX() >= Game.WIDTH) {
+			shape.setPosition(Game.WIDTH, shape.getY());
+			forces.x = 0;
+		}
+		if(shape.getY() <= 0) {
+			shape.setPosition(shape.getX(), 0);
+			forces.y = 0;
+		}
+		if(shape.getY() >= Game.HEIGHT) {
+			shape.setPosition(shape.getX(), Game.HEIGHT);
+			forces.y = 0;
+		}
 	}
-	
+
 	// A force either forward or backwards
+	// Don't need a max force because the speed gradually decreases
 	public void addForceForward(float force) {
-		if(forces.x < 3f) {
-			forces.x += force * (float) Math.sin(Math.toRadians(shape.getRotation()));
-		}
-		if(forces.y < 3f) {
-			forces.y += force * (float) Math.cos(Math.toRadians(shape.getRotation()));
-		}
+		forces.x += -force * (float) MathUtils.sinDeg(shape.getRotation());
+		forces.y += force * (float) MathUtils.cosDeg(shape.getRotation());
 	}
+
 	// A force either left or right
 	public void addRotationalForce(float force) {
-		if(rotationalForce < 10f && rotationalForce > -10f) {
+		if (rotationalForce < 32f && rotationalForce > -32f) {
 			rotationalForce += force;
 		}
 	}
-	
+
 	public void adddPosition(float x, float y) {
 		shape.setPosition(shape.getX() + x, shape.getY() + y);
 	}

@@ -8,11 +8,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
@@ -21,14 +19,14 @@ import com.wall.game.objects.Player.PlayerStats;
 
 public class PlayScreen implements Screen {
 
-	final Game game;
+	private final Game game;
 	private OrthographicCamera camera;
 
 	// private Texture shipTex;
 	// private Sprite shipSprite;
 
-	private Texture laserTex;
-	private Sprite laserSprite;
+//	private Texture laserTex;
+//	private Sprite laserSprite;
 
 	// private Texture enemyTex;
 	// private Sprite enemySprite;
@@ -38,9 +36,8 @@ public class PlayScreen implements Screen {
 	private HashMap<Integer, Player> players;
 	private ArrayList<Laser> lasers;
 	private ArrayList<Asteroid> asteroids;
-
+	
 	public Integer myPlayerindex;
-	private boolean moved;
 
 	public PlayScreen(final Game game, int myPlayerIndex) {
 		this.game = game;
@@ -50,8 +47,8 @@ public class PlayScreen implements Screen {
 
 		// shipTex = new Texture("ship.png");
 		// shipSprite = new Sprite(shipTex);
-		laserTex = new Texture("laser.png");
-		laserSprite = new Sprite(laserTex);
+//		laserTex = new Texture("laser.png");
+//		laserSprite = new Sprite(laserTex);
 		// enemyTex = new Texture("enemy.png");
 		// enemySprite = new Sprite(enemyTex);
 
@@ -73,16 +70,16 @@ public class PlayScreen implements Screen {
 		// Get the user input
 		if (myPlayerindex != null && players.containsKey(myPlayerindex)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-				players.get(myPlayerindex).addRotationalForce(dt * 10f);
+				players.get(myPlayerindex).addRotationalForce(dt * 32f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-				players.get(myPlayerindex).addRotationalForce(-dt * 10f);
+				players.get(myPlayerindex).addRotationalForce(-dt * 32f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-				players.get(myPlayerindex).addForceForward(dt * 6f);
+				players.get(myPlayerindex).addForceForward(dt * 16f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-				players.get(myPlayerindex).addForceForward(-dt * 6f);
+				players.get(myPlayerindex).addForceForward(-dt * 16f);
 			}
 
 			// If the space bar is pressed launch new bullet at the center of the sprite
@@ -127,6 +124,8 @@ public class PlayScreen implements Screen {
 			asteroids.get(i).addX((float) (Asteroid.SPEED * dt * Math.sin(asteroids.get(i).getDirection())));
 			asteroids.get(i).addY((float) (Asteroid.SPEED * dt * Math.cos(asteroids.get(i).getDirection())));
 		}
+		
+		System.out.println(players.get(myPlayerindex).getDirectionInDegrees());
 	}
 
 	@Override
@@ -167,19 +166,13 @@ public class PlayScreen implements Screen {
 		}
 
 		// Draw all the lasers
-		for (Laser laser : lasers) {
-			// laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
-			// laserSprite.setX(laser.getX());
-			// laserSprite.setY(laser.getY());
-			// laserSprite.draw(game.sb);
-			shapeRenderer.polygon(laser.getShape().getVertices());
-		}
-
-		// for (Enemy enemy : enemies) {
-		// enemySprite.setX(enemy.getX());
-		// enemySprite.setY(enemy.getY());
-		// enemySprite.draw(game.sb);
-		// }
+//		for (Laser laser : lasers) {
+//			// laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
+//			// laserSprite.setX(laser.getX());
+//			// laserSprite.setY(laser.getY());
+//			// laserSprite.draw(game.sb);
+////			shapeRenderer.polygon(laser.getShape().getVertices());
+//		}
 
 		for (int i = 0; i < asteroids.size(); i++) {
 			for (int j = 0; j < asteroids.get(i).numVertices; j++) {
