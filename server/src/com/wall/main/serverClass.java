@@ -23,6 +23,7 @@ import com.wall.game.objects.Laser.LaserStat;
  */
 public class serverClass {
 
+	// Returns the ip address of the server computer: eg.: 168.192...
 	// Got from: https://groups.google.com/forum/#!topic/kryonet-users/lxicKGTFcu4, username: dannyG82
 	public static String getIp() throws Exception {
 		for (NetworkInterface iFace : Collections.list(NetworkInterface.getNetworkInterfaces())) {
