@@ -9,7 +9,7 @@ public class Player {
 
 	private final float[] VERTICES = { 0f, 0f, 16f, 32f, 32f, 0f, 16f, 8f };
 
-	private short playerNumber;
+	private int playerNumber;
 
 	private Polygon shape;
 
@@ -30,11 +30,11 @@ public class Player {
 
 	}
 
-	public void setPlayerNumber(short playerNumber) {
+	public void setPlayerNumber(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
 
-	public short getPlayerNumber() {
+	public int getPlayerNumber() {
 		return playerNumber;
 	}
 
@@ -113,41 +113,5 @@ public class Player {
 
 	public float getDirectionInDegrees() {
 		return shape.getRotation();
-	}
-
-	public static class PlayerStats {
-		public float x, y;
-		public float direction;
-		public short index;
-
-		public PlayerStats(float x, float y, float direction, short index) {
-			this.x = x;
-			this.y = y;
-			this.direction = direction;
-			this.index = index;
-		}
-
-		public PlayerStats() {
-			x = 0f;
-			y = 0f;
-			direction = 0;
-		}
-
-		public PlayerStats(String s) {
-			String[] data = s.split(",");
-			try {
-				x = Float.parseFloat(data[0]);
-				y = Float.parseFloat(data[1]);
-				direction = Float.parseFloat(data[2]);
-				index = Short.parseShort(data[3]);
-			} catch (NumberFormatException e) {
-				System.out.println("Error reading the player data");
-			}
-		}
-
-		public String sendTcp() {
-			return x + "," + y + "," + direction + "," + index;
-		}
-
 	}
 }

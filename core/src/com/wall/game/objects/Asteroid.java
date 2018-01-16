@@ -7,14 +7,15 @@ import com.wall.game.AsteroidGame;
 public class Asteroid {
 
 	public static float SPEED = 64f;
-
-
+	private int size;
+	
 	private Polygon shape;
 	public final int numVertices;
 
 	// Main constructor
 	public Asteroid(float x, float y, float direction, int size, int numVertices) {
 		this.numVertices = numVertices;
+		this.size = size;
 
 		float[] vertices = new float[numVertices * 2];
 		// Generates an asteroid with random vertices, each vertice is a pair
@@ -65,6 +66,10 @@ public class Asteroid {
 		shape.setRotation(direction);
 	}
 
+	public int getSize() {
+		return size;
+	}
+	
 	public Asteroid(float x, float y, float direction, float[] vertices) {
 		this.numVertices = vertices.length;
 
