@@ -95,7 +95,7 @@ public class serverClass {
 					break;
 				}
 			}
-		}, 250, 1000);
+		}, 500, 32);
 
 	}
 

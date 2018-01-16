@@ -1,5 +1,7 @@
 ## Eclipse
+
 .metadata/
 .classpath
+.recommenders
 .recommenders/
 *.gen

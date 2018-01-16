@@ -1,74 +1,76 @@
 package com.wall.game.objects;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.wall.game.Game;
 
 public class Asteroid {
 
 	public static float SPEED = 64f;
 
-	private float x, y;
-	private float direction;
 
-	private Vector2[] vertices;
+	private Polygon shape;
 	public final int numVertices;
 
 	// Main constructor
 	public Asteroid(float x, float y, float direction, int size, int numVertices) {
 		this.numVertices = numVertices;
-		this.x = x;
-		this.y = y;
-		this.direction = direction;
 
-		vertices = new Vector2[numVertices];
-
-		// Generates an asteroid with random vertices with lines connected between them
+		float[] vertices = new float[numVertices * 2];
+		// Generates an asteroid with random vertices, each vertice is a pair
 		switch (numVertices) {
 		case 4: // 4 vertices or sides, etc..
-			vertices[0] = new Vector2((float) (Math.random() * (size / 2) - 8),
-					(float) (Math.random() * (size / 2) - 8));
-			vertices[1] = new Vector2((float) (Math.random() * (size / 2) + 8) + (size / 2),
-					(float) (Math.random() * (size / 2) - 8));
-			vertices[3] = new Vector2((float) (Math.random() * (size / 2) - 8),
-					(float) (Math.random() * (size / 2) + 8) + (size / 2));
-			vertices[2] = new Vector2((float) (Math.random() * (size / 2) + 8) + (size / 2),
-					(float) (Math.random() * (size / 2) + 8) + (size / 2));
+			vertices[0] = (float) (Math.random() * (size / 2) - 8);
+			vertices[1] = (float) (Math.random() * (size / 2) - 8);
+			vertices[2] = (float) (Math.random() * (size / 2) + 8) + (size / 2);
+			vertices[3] = (float) (Math.random() * (size / 2) - 8);
+			vertices[4] = (float) (Math.random() * (size / 2) + 8) + (size / 2);
+			vertices[5] = (float) (Math.random() * (size / 2) + 8) + (size / 2);
+			vertices[6] = (float) (Math.random() * (size / 2) - 8);
+			vertices[7] = (float) (Math.random() * (size / 2) + 8) + (size / 2);
 			break;
 		case 5:
-			vertices[0] = new Vector2((float) (Math.random() * (size / 3)), (float) (Math.random() * size / 2 - 8));
-			vertices[1] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)),
-					(float) (Math.random() * size / 2 - 8));
-			vertices[2] = new Vector2((float) (Math.random() * (size / 3)) + (2 * size / 3),
-					(float) (Math.random() * size));
-			vertices[3] = new Vector2((float) (Math.random() * (size / 3) + (size / 3)),
-					(float) (Math.random() * size / 2 + (size / 2)));
-			vertices[4] = new Vector2((float) (Math.random() * (size / 3)),
-					(float) (Math.random() * size / 2 - 8) + (size / 2));
+			vertices[0] = (float) (Math.random() * (size / 3));
+			vertices[1] = (float) (Math.random() * size / 2 - 8);
+			vertices[2] = (float) (Math.random() * (size / 3) + (size / 3));
+			vertices[3] = (float) (Math.random() * size / 2 - 8);
+			vertices[4] = (float) (Math.random() * (size / 3)) + (2 * size / 3);
+			vertices[5] = (float) (Math.random() * size);
+			vertices[6] = (float) (Math.random() * (size / 3) + (size / 3));
+			vertices[7] = (float) (Math.random() * size / 2 + (size / 2));
+			vertices[8] = (float) (Math.random() * (size / 3));
+			vertices[9] = (float) (Math.random() * size / 2 - 8) + (size / 2);
 			break;
 		case 6:
-			vertices[0] = new Vector2((float) (Math.random() * (size / 4)), (float) (Math.random() * size / 2 - 8));
-			vertices[1] = new Vector2((float) (Math.random() * (size / 4) + (size / 3)),
-					(float) (Math.random() * size / 2 - 8));
-			vertices[2] = new Vector2((float) (Math.random() * (size / 4) + (size / 1.5)),
-					(float) (Math.random() * size / 2 - 8));
-			vertices[3] = new Vector2((float) (Math.random() * (size / 4) + (size / 1.5)),
-					(float) (Math.random() * size / 2 + (size / 2 + 8)));
-			vertices[4] = new Vector2((float) (Math.random() * (size / 4) + (size / 3)),
-					(float) (Math.random() * size / 2 + (size / 2 + 8)));
-			vertices[5] = new Vector2((float) (Math.random() * size / 4),
-					(float) (Math.random() * size / 2 + (size / 2 + 8)));
+			vertices[0] = (float) (Math.random() * (size / 4));
+			vertices[1] = (float) (Math.random() * size / 2 - 8);
+			vertices[2] = (float) (Math.random() * (size / 4) + (size / 3));
+			vertices[3] = (float) (Math.random() * size / 2 - 8);
+			vertices[4] = (float) (Math.random() * (size / 4) + (size / 1.5));
+			vertices[5] = (float) (Math.random() * size / 2 - 8);
+			vertices[6] = (float) (Math.random() * (size / 4) + (size / 1.5));
+			vertices[7] = (float) (Math.random() * size / 2 + (size / 2 + 8));
+			vertices[8] = (float) (Math.random() * (size / 4) + (size / 3));
+			vertices[9] = (float) (Math.random() * size / 2 + (size / 2 + 8));
+			vertices[10] = (float) (Math.random() * size / 4);
+			vertices[11] = (float) (Math.random() * size / 2 + (size / 2 + 8));
 			break;
 		default:
 			System.out.println("Error");
 		}
+		
+		// Create the polygon of the asteroid with generated vertices
+		shape = new Polygon(vertices);
+		shape.setPosition(x, y);
+		shape.setRotation(direction);
 	}
 
-	public Asteroid(float x, float y, double direction, Vector2[] vertices) {
-		this.x = x;
-		this.y = y;
-
-		this.vertices = vertices;
+	public Asteroid(float x, float y, float direction, float[] vertices) {
 		this.numVertices = vertices.length;
+
+		shape = new Polygon(vertices);
+		shape.setPosition(x, y);
+		shape.setRotation(direction);
 	}
 
 	public Asteroid() {
@@ -79,50 +81,46 @@ public class Asteroid {
 	// Returns true if out of bounds, so that it can be deleted
 	public boolean update(float dt) {
 		// Update the position of asteroid
-		x += dt * 64f * MathUtils.sinDeg(direction);
-		y += dt * 64f * MathUtils.cosDeg(direction);
+		shape.translate(dt * 64f * MathUtils.sinDeg(shape.getRotation()), dt * 64f * MathUtils.cosDeg(shape.getRotation()));
 
 		// Check if asteroid is out of bounds
-		if (x < -64f || x > Game.WIDTH + 64f || y < -64f || y > Game.HEIGHT + 64f) {
+		if (shape.getX() < -64f || shape.getX() > Game.WIDTH + 64f || shape.getY() < -64f || shape.getY() > Game.HEIGHT + 64f) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public Vector2 getVertice(int i) {
-		return vertices[i];
+	public Polygon getShape() {
+		return shape;
+	}
+	
+	public float[] getVertices() {
+		return shape.getTransformedVertices();
 	}
 
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public void setY(float y) {
-		this.y = y;
+	public void setX(float x, float y) {
+		shape.setPosition(x, y);
 	}
 
 	public void setDirection(float d) {
-		this.direction = d;
+		shape.setRotation(d);
 	}
 
 	public float getX() {
-		return x;
+		return shape.getX();
 	}
 
 	public float getY() {
-		return y;
+		return shape.getY();
 	}
 
-	public float getDirection() {
-		return direction;
+	public float getDirectionInDegrees() {
+		return shape.getRotation();
 	}
 
-	public void addX(float x) {
-		this.x += x;
+	public void translate(float x, float y) {
+		shape.translate(x, y);
 	}
 
-	public void addY(float y) {
-		this.y += y;
-	}
 }

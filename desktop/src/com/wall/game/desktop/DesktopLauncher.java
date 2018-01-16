@@ -9,9 +9,10 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
-		config.x = Game.WIDTH;
-		config.y = Game.HEIGHT;
+		config.width = Game.WIDTH;
+		config.height = Game.HEIGHT;
 		config.foregroundFPS = 60;
+		config.title = "Asteroids";
 		
 		new LwjglApplication(new Game(), config);
 	}

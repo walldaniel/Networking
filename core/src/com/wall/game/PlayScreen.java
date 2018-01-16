@@ -2,6 +2,7 @@ package com.wall.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
@@ -21,15 +24,6 @@ public class PlayScreen implements Screen {
 
 	private final Game game;
 	private OrthographicCamera camera;
-
-	// private Texture shipTex;
-	// private Sprite shipSprite;
-
-	// private Texture laserTex;
-	// private Sprite laserSprite;
-
-	// private Texture enemyTex;
-	// private Sprite enemySprite;
 
 	private ShapeRenderer shapeRenderer;
 
@@ -44,13 +38,6 @@ public class PlayScreen implements Screen {
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
-
-		// shipTex = new Texture("ship.png");
-		// shipSprite = new Sprite(shipTex);
-		// laserTex = new Texture("laser.png");
-		// laserSprite = new Sprite(laserTex);
-		// enemyTex = new Texture("enemy.png");
-		// enemySprite = new Sprite(enemyTex);
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -85,7 +72,8 @@ public class PlayScreen implements Screen {
 			// If the space bar is pressed launch new bullet at the center of the sprite
 			// TODO: fix the lasers from ship
 			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-				Laser laser = new Laser(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(), players.get(myPlayerindex).getDirectionInDegrees());
+				Laser laser = new Laser(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(),
+						players.get(myPlayerindex).getDirectionInDegrees());
 				lasers.add(laser);
 				game.client.sendTCP(laser);
 			}
@@ -101,12 +89,10 @@ public class PlayScreen implements Screen {
 				players.get(myPlayerindex).getDirectionInDegrees(), players.get(myPlayerindex).getPlayerNumber())
 						.sendTcp());
 
-		
-
 		// Update all the lasers position
 		// Also sees if the laser is out of bounds and removes
 		for (int i = lasers.size() - 1; i >= 0; i--) {
-			if(lasers.get(i).update(dt)) {
+			if (lasers.get(i).update(dt)) {
 				lasers.remove(i);
 				i--;
 			}
@@ -120,6 +106,21 @@ public class PlayScreen implements Screen {
 
 				// If the asteroid is removed make sure that you noe check the current i by decrementing it
 				i--;
+			}
+		}
+
+		// Check if a laser or player has collided with an asteroid
+		// Iterates over both arrays, code from:
+		// https://stackoverflow.com/questions/18448671/how-to-avoid-concurrentmodificationexception-while-removing-elements-from-arr
+		Iterator<Asteroid> iterAsteroids = asteroids.iterator();
+		Iterator<Laser> iterLasers = lasers.iterator();
+
+		while (iterAsteroids.hasNext()) {
+			while (iterLasers.hasNext()) {
+				if (Intersector.overlapConvexPolygons(iterAsteroids.next().getShape(), iterLasers.next().getShape())) {
+					iterAsteroids.remove();
+					iterLasers.remove();
+				}
 			}
 		}
 	}
@@ -162,25 +163,13 @@ public class PlayScreen implements Screen {
 		}
 
 		// Draw all the lasers
-		for(Laser l : lasers) {
+		for (Laser l : lasers) {
 			shapeRenderer.polygon(l.getShape().getTransformedVertices());
 		}
 
-		// Draw the asteroid with lines between each vertice
-		// The last line has to be drawn from last vertice to first to complete the shape
-		for (int i = 0; i < asteroids.size(); i++) {
-			for (int j = 0; j < asteroids.get(i).numVertices; j++) {
-				if (j < asteroids.get(i).numVertices - 1)
-					shapeRenderer.line(asteroids.get(i).getVertice(j).x + asteroids.get(i).getX(),
-							asteroids.get(i).getVertice(j).y + asteroids.get(i).getY(),
-							asteroids.get(i).getVertice(j + 1).x + asteroids.get(i).getX(),
-							asteroids.get(i).getVertice(j + 1).y + asteroids.get(i).getY());
-				else
-					shapeRenderer.line(asteroids.get(i).getVertice(j).x + asteroids.get(i).getX(),
-							asteroids.get(i).getVertice(j).y + asteroids.get(i).getY(),
-							asteroids.get(i).getVertice(0).x + asteroids.get(i).getX(),
-							asteroids.get(i).getVertice(0).y + asteroids.get(i).getY());
-			}
+		// Draw the asteroids
+		for (Asteroid a : asteroids) {
+			shapeRenderer.polygon(a.getShape().getTransformedVertices());
 		}
 
 		shapeRenderer.end();

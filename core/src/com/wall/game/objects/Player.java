@@ -57,8 +57,8 @@ public class Player {
 		shape.translate(forces.x, forces.y);
 
 		// Decrease the force on the ship
-		forces.x *= 0.97f;
-		forces.y *= 0.97f;
+		forces.x *= 0.96f;
+		forces.y *= 0.96f;
 		rotationalForce *= 0.9f;
 		
 		// Check if out of bounds
