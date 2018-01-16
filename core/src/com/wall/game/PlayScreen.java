@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -12,8 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
@@ -31,12 +30,15 @@ public class PlayScreen implements Screen {
 	private ArrayList<Asteroid> asteroids;
 
 	public Integer myPlayerindex;
+	private boolean iteratingOverAsteroids = false;
+	private Asteroid tempAsteroid;
+	private Laser tempLaser;
 
-	public PlayScreen(final AsteroidGame game, int myPlayerIndex) {
+	public PlayScreen(final AsteroidGame game) {
 		this.game = game;
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, AsteroidGame.WIDTH, AsteroidGame.HEIGHT);
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -48,7 +50,6 @@ public class PlayScreen implements Screen {
 		players.put(game.client.getID(), player);
 		game.client.sendTCP(player);
 		myPlayerindex = game.client.getID();
-
 		game.client.sendTCP("GET_PLAYERS");
 	}
 
@@ -103,7 +104,8 @@ public class PlayScreen implements Screen {
 			if (asteroids.get(i).update(dt)) {
 				asteroids.remove(i);
 
-				// If the asteroid is removed make sure that you noe check the current i by decrementing it
+				// If the asteroid is removed make sure that you noe check the current i by
+				// decrementing it
 				i--;
 			}
 		}
@@ -113,7 +115,8 @@ public class PlayScreen implements Screen {
 		// https://stackoverflow.com/questions/18448671/how-to-avoid-concurrentmodificationexception-while-removing-elements-from-arr
 		Iterator<Asteroid> iterAsteroids = asteroids.iterator();
 		Iterator<Laser> iterLasers = lasers.iterator();
-
+		iteratingOverAsteroids = true;
+		long time = System.currentTimeMillis();
 		while (iterAsteroids.hasNext()) {
 			while (iterLasers.hasNext()) {
 				if (Intersector.overlapConvexPolygons(iterAsteroids.next().getShape(), iterLasers.next().getShape())) {
@@ -121,6 +124,18 @@ public class PlayScreen implements Screen {
 					iterLasers.remove();
 				}
 			}
+		}
+		System.out.println(System.currentTimeMillis() - time);
+		iteratingOverAsteroids = false;
+		
+		// Check if an asteroid or laser was added
+		if(tempAsteroid != null) {
+			asteroids.add(tempAsteroid);
+			tempAsteroid = null;
+		}
+		if(tempLaser != null) {
+			lasers.add(tempLaser);
+			tempLaser = null;
 		}
 	}
 
@@ -211,12 +226,27 @@ public class PlayScreen implements Screen {
 		}
 	}
 
+	// Add a new asteroid or laser, usually from server
+	// TODO: What happens if multiple asteroids spawn??
 	public void addLaser(Laser laser) {
-		lasers.add(laser);
+		// Check if iterating since could cause problems
+		if(!iteratingOverAsteroids) {
+			lasers.add(laser);
+			return;
+		}
+		
+		// Add the laser to temp storage
+		tempLaser = laser;
 	}
-
-	public void addEnemy(Asteroid enemy) {
-		asteroids.add(enemy);
+	public void addEnemy(Asteroid asteroid) {
+		// Check if iterating over asteroids since if you add asteroid in middle will cause problems
+		if(!iteratingOverAsteroids) {
+			asteroids.add(asteroid);
+			return;
+		}
+		
+		// Add the asteroid to be added soon
+		tempAsteroid = asteroid;
 	}
 
 }

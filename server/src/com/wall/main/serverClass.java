@@ -75,7 +75,7 @@ public class serverClass {
 				if (object instanceof Player) {
 					// This is called whenever a new player joins the game
 					// Send the player object to every connection
-					server.sendToAllTCP(object);
+					server.sendToAllExceptTCP(connection.getID(), object);
 					
 					// Add the player to the servers list
 					addPlayer((Player) object, connection.getID());
@@ -111,7 +111,7 @@ public class serverClass {
 					break;
 				}
 			}
-		}, 500, 32);
+		}, 500, 500);
 
 	}
 
