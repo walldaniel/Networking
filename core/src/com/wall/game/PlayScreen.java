@@ -17,12 +17,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
-import com.wall.game.objects.Laser.LaserStat;
 import com.wall.game.objects.Player.PlayerStats;
 
 public class PlayScreen implements Screen {
 
-	private final Game game;
+	private final AsteroidGame game;
 	private OrthographicCamera camera;
 
 	private ShapeRenderer shapeRenderer;
@@ -33,7 +32,7 @@ public class PlayScreen implements Screen {
 
 	public Integer myPlayerindex;
 
-	public PlayScreen(final Game game, int myPlayerIndex) {
+	public PlayScreen(final AsteroidGame game, int myPlayerIndex) {
 		this.game = game;
 
 		camera = new OrthographicCamera();
@@ -212,8 +211,8 @@ public class PlayScreen implements Screen {
 		}
 	}
 
-	public void addLaser(LaserStat laser) {
-		lasers.add(new Laser(laser.x, laser.y, laser.direction));
+	public void addLaser(Laser laser) {
+		lasers.add(laser);
 	}
 
 	public void addEnemy(Asteroid enemy) {

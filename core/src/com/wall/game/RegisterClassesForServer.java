@@ -7,8 +7,6 @@ import com.esotericsoftware.kryonet.Server;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
-import com.wall.game.objects.Vector2;
-import com.wall.game.objects.Laser.LaserStat;
 
 public class RegisterClassesForServer {
 
@@ -27,10 +25,7 @@ public class RegisterClassesForServer {
 		kryo.register(Player.class);
 		kryo.register(Integer.class);
 		kryo.register(Laser.class);
-		kryo.register(LaserStat.class);
 		kryo.register(Asteroid.class);
-		kryo.register(Vector2.class);
-		kryo.register(Vector2[].class);
 		kryo.register(Polygon.class);
 		kryo.register(float[].class);
 		kryo.register(com.badlogic.gdx.math.Vector2.class);

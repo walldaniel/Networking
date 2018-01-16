@@ -2,15 +2,15 @@ package com.wall.game.objects;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
-import com.wall.game.Game;
+import com.wall.game.AsteroidGame;
 
 public class Laser {
 
 	private final float[] VERTICES = { 0,0,4,0,4,16,0,16};
 	
 	// Used to determine when the laser has gone out of the screen
-	public static final int REMOVAL_X = Game.WIDTH + 160;
-	public static final int REMOVAL_Y = Game.HEIGHT + 16;
+	public static final int REMOVAL_X = AsteroidGame.WIDTH + 160;
+	public static final int REMOVAL_Y = AsteroidGame.HEIGHT + 16;
 
 	public static final int WIDTH = 8;
 	public static final int HEIGHT = 64;
@@ -51,22 +51,4 @@ public class Laser {
 		return shape.getY();
 	}
 
-	public static class LaserStat {
-		public float x, y;
-		public float direction;
-
-		public LaserStat(float x, float y, float direction) {
-			this.x = x;
-			this.y = y;
-			this.direction = direction;
-		}
-
-		public LaserStat() {
-
-		}
-	}
-
-	public LaserStat toLaserStat() {
-		return new LaserStat(shape.getX(), shape.getY(), shape.getRotation());
-	}
 }

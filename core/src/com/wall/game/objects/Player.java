@@ -3,7 +3,7 @@ package com.wall.game.objects;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.wall.game.Game;
+import com.wall.game.AsteroidGame;
 
 public class Player {
 
@@ -67,16 +67,16 @@ public class Player {
 			shape.setPosition(0, shape.getY());
 			forces.x = 0;
 		}
-		if(shape.getX() >= Game.WIDTH) {
-			shape.setPosition(Game.WIDTH, shape.getY());
+		if(shape.getX() >= AsteroidGame.WIDTH) {
+			shape.setPosition(AsteroidGame.WIDTH, shape.getY());
 			forces.x = 0;
 		}
 		if(shape.getY() <= 0) {
 			shape.setPosition(shape.getX(), 0);
 			forces.y = 0;
 		}
-		if(shape.getY() >= Game.HEIGHT) {
-			shape.setPosition(shape.getX(), Game.HEIGHT);
+		if(shape.getY() >= AsteroidGame.HEIGHT) {
+			shape.setPosition(shape.getX(), AsteroidGame.HEIGHT);
 			forces.y = 0;
 		}
 	}

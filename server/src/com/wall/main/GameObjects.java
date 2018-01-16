@@ -29,9 +29,9 @@ public class GameObjects {
 		lasers = new ArrayList<Laser>();
 	}
 	
-	public void addPlayer(Player p, Integer num) throws Exception {
+	public void addPlayer(Player p, Integer num) {
 		if(players.containsKey(num))
-			throw new Exception();
+			return;
 		
 		players.put(num, p);
 	}

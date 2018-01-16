@@ -2,7 +2,7 @@ package com.wall.game.objects;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
-import com.wall.game.Game;
+import com.wall.game.AsteroidGame;
 
 public class Asteroid {
 
@@ -84,7 +84,7 @@ public class Asteroid {
 		shape.translate(dt * 64f * MathUtils.sinDeg(shape.getRotation()), dt * 64f * MathUtils.cosDeg(shape.getRotation()));
 
 		// Check if asteroid is out of bounds
-		if (shape.getX() < -64f || shape.getX() > Game.WIDTH + 64f || shape.getY() < -64f || shape.getY() > Game.HEIGHT + 64f) {
+		if (shape.getX() < -64f || shape.getX() > AsteroidGame.WIDTH + 64f || shape.getY() < -64f || shape.getY() > AsteroidGame.HEIGHT + 64f) {
 			return true;
 		}
 

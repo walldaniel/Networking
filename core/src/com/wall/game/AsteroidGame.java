@@ -5,19 +5,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.wall.game.objects.Asteroid;
+import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
-import com.wall.game.objects.Laser.LaserStat;
 import com.wall.game.objects.Player.PlayerStats;
 
-public class Game extends com.badlogic.gdx.Game {
+public class AsteroidGame extends Game {
 
 	private BufferedReader br;
-
+	
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 
@@ -31,8 +32,8 @@ public class Game extends com.badlogic.gdx.Game {
 		client = new Client();
 		client.start();
 		try {
-			// First try and automaticaly find a the server on the network, then ask user
-			// for ip address
+			// First try and automatically find a the server on the network, 
+			// then ask user for ip address
 			InetAddress address = client.discoverHost(54777, 5000);
 			if (address != null) {
 				client.connect(5000, address, 54555, 54777);
@@ -59,8 +60,8 @@ public class Game extends com.badlogic.gdx.Game {
 						screen.updatePlayerPos(ps);
 					}
 				}
-				if(object instanceof LaserStat) {
-					screen.addLaser((LaserStat) object);
+				if(object instanceof Laser) {
+					screen.addLaser((Laser) object);
 				}
 				if(object instanceof Asteroid) {
 					if(screen != null)
@@ -68,7 +69,6 @@ public class Game extends com.badlogic.gdx.Game {
 				}
 				if (object instanceof Player) {
 					// Add player to list of players
-//					Player player = (Player) object;
 					if(screen != null)
 						screen.addPlayer((Player) object);
 				}
@@ -79,7 +79,6 @@ public class Game extends com.badlogic.gdx.Game {
 				}
 			}
 		});
-//		screen.myPlayerindex = client.getID();
 
 		sb = new SpriteBatch();
 		screen = new PlayScreen(this, client.getID());

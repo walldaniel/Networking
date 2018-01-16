@@ -3,7 +3,6 @@ package com.wall.main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,18 +10,19 @@ import java.util.TimerTask;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.wall.game.Game;
+import com.wall.game.AsteroidGame;
 import com.wall.game.RegisterClassesForServer;
 import com.wall.game.objects.Asteroid;
+import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
-import com.wall.game.objects.Vector2;
-import com.wall.game.objects.Laser.LaserStat;
 
 /*
  * Used to create a server to control the conections between players
  */
 public class serverClass {
 
+	private static GameObjects objects;
+	
 	// Returns the ip address of the server computer: eg.: 168.192...
 	// Got from: https://groups.google.com/forum/#!topic/kryonet-users/lxicKGTFcu4, username: dannyG82
 	public static String getIp() throws Exception {
@@ -36,7 +36,18 @@ public class serverClass {
 		return "unknown";
 	}
 
+	private static synchronized void addPlayer(Player p, int playerNumber) {
+		objects.addPlayer(p, playerNumber);
+	}
+	
+	private static synchronized void addLaser(Laser l) {
+		objects.addLaser(l);
+	}
+	
 	public static void main(String[] args) throws IOException {
+		// Initialize all the objects
+		objects = new GameObjects();
+		
 		final Server server = new Server();
 		server.start();
 		server.bind(54555, 54777);
@@ -56,13 +67,18 @@ public class serverClass {
 						server.sendToAllExceptTCP(connection.getID(), object);
 					}
 				}
-				if (object instanceof LaserStat) {
+				if (object instanceof Laser) {
 					server.sendToAllExceptTCP(connection.getID(), object);
+					
+					addLaser((Laser) object);
 				}
 				if (object instanceof Player) {
 					// This is called whenever a new player joins the game
 					// Send the player object to every connection
 					server.sendToAllTCP(object);
+					
+					// Add the player to the servers list
+					addPlayer((Player) object, connection.getID());
 				}
 			}
 		});
@@ -78,19 +94,19 @@ public class serverClass {
 				// TODO: Have the asteroid spawn with a direction towards the player
 				switch ((int) (Math.random() * 4)) {
 				case 0: // left
-					server.sendToAllTCP(new Asteroid(-16, (float) Math.random() * Game.HEIGHT,
+					server.sendToAllTCP(new Asteroid(-16, (float) Math.random() * AsteroidGame.HEIGHT,
 							(float) (Math.random() * 90 + 45), 63, (int) (Math.random() * 3 + 4)));
 					break;
 				case 1: // right
-					server.sendToAllTCP(new Asteroid(Game.WIDTH + 16f, (float) Math.random() * Game.HEIGHT,
+					server.sendToAllTCP(new Asteroid(AsteroidGame.WIDTH + 16f, (float) Math.random() * AsteroidGame.HEIGHT,
 							(float) (Math.random() * 90 + 225), 63, (int) (Math.random() * 3 + 4)));
 					break;
 				case 2: // top
-					server.sendToAllTCP(new Asteroid((float) Math.random() * Game.WIDTH, Game.HEIGHT + 16f,
+					server.sendToAllTCP(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, AsteroidGame.HEIGHT + 16f,
 							(float) (Math.random() * 90 + 135), 63, (int) (Math.random() * 3 + 4)));
 					break;
 				case 3: // bottom
-					server.sendToAllTCP(new Asteroid((float) Math.random() * Game.WIDTH, -16f,
+					server.sendToAllTCP(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, -16f,
 							(float) (Math.random() * 90 + 305), 63, (int) (Math.random() * 3 + 4)));
 					break;
 				}
