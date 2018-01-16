@@ -85,7 +85,9 @@ public class PlayScreen implements Screen {
 			// If the space bar is pressed launch new bullet at the center of the sprite
 			// TODO: fix the lasers from ship
 			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-
+				Laser laser = new Laser(players.get(myPlayerindex).getX(), players.get(myPlayerindex).getY(), players.get(myPlayerindex).getDirectionInDegrees());
+				lasers.add(laser);
+				game.client.sendTCP(laser);
 			}
 
 		}
@@ -99,17 +101,15 @@ public class PlayScreen implements Screen {
 				players.get(myPlayerindex).getDirectionInDegrees(), players.get(myPlayerindex).getPlayerNumber())
 						.sendTcp());
 
-		// Check if a laser has exited the screen
-		// TODO: make removal of lasers more efficient
-		for (int i = lasers.size() - 1; i >= 0; i--) {
-			if (!(lasers.get(i).getX() > -16f && lasers.get(i).getX() < Laser.REMOVAL_X)
-					|| !(lasers.get(i).getY() > -16f && lasers.get(i).getY() < Laser.REMOVAL_Y))
-				lasers.remove(i);
-		}
+		
 
 		// Update all the lasers position
+		// Also sees if the laser is out of bounds and removes
 		for (int i = lasers.size() - 1; i >= 0; i--) {
-			lasers.get(i).update(dt);
+			if(lasers.get(i).update(dt)) {
+				lasers.remove(i);
+				i--;
+			}
 		}
 
 		// Update all the asteroids
@@ -162,13 +162,9 @@ public class PlayScreen implements Screen {
 		}
 
 		// Draw all the lasers
-		// for (Laser laser : lasers) {
-		// // laserSprite.setRotation((float) Math.toDegrees(laser.getDirectionInRads()));
-		// // laserSprite.setX(laser.getX());
-		// // laserSprite.setY(laser.getY());
-		// // laserSprite.draw(game.sb);
-		//// shapeRenderer.polygon(laser.getShape().getVertices());
-		// }
+		for(Laser l : lasers) {
+			shapeRenderer.polygon(l.getShape().getTransformedVertices());
+		}
 
 		// Draw the asteroid with lines between each vertice
 		// The last line has to be drawn from last vertice to first to complete the shape

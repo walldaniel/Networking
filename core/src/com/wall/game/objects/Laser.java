@@ -1,51 +1,54 @@
 package com.wall.game.objects;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.wall.game.Game;
 
 public class Laser {
 
-	public static final float REMOVAL_X = Game.WIDTH + 160;
-	public static final float REMOVAL_Y = Game.HEIGHT + 16;
+	private final float[] VERTICES = { 0,0,4,0,4,16,0,16};
+	
+	// Used to determine when the laser has gone out of the screen
+	public static final int REMOVAL_X = Game.WIDTH + 160;
+	public static final int REMOVAL_Y = Game.HEIGHT + 16;
 
 	public static final int WIDTH = 8;
 	public static final int HEIGHT = 64;
 
 	private final float speed = 1024f;
 
-	private float direction; // in rads
-
-	private float x;
-	private float y;
+	private Polygon shape;
 
 	public Laser(float x, float y, float d) {
-		this.x = x;
-		this.y = y;
-
-		this.direction = d;
+		shape = new Polygon(VERTICES);
+		shape.setPosition(x, y);
+		shape.setRotation(d);
 	}
 
 	public Laser() {
 
 	}
 	
-	public void update(float dt) {
-//		shape.setPosition((float) (shape.getX() + (-speed * dt * Math.sin(direction))),
-//				(float) (shape.getY() + (speed * dt * Math.cos(direction))));
-//		System.out.println(shape.getX() + " - " + shape.getY());
+	public boolean update(float dt) {
+		shape.translate(-dt * speed * MathUtils.sinDeg(shape.getRotation()), dt * speed * MathUtils.cosDeg(shape.getRotation()));
+		
+		return false;
+	}
+	
+	public Polygon getShape() {
+		return shape;
 	}
 
-	public double getDirectionInRads() {
-		return direction;
+	public double getDirectionInDegrees() {
+		return shape.getRotation();
 	}
 
 	public float getX() {
-		return x;
+		return shape.getX();
 	}
 
 	public float getY() {
-		return y;
+		return shape.getY();
 	}
 
 	public static class LaserStat {
@@ -64,6 +67,6 @@ public class Laser {
 	}
 
 	public LaserStat toLaserStat() {
-		return new LaserStat(x, y, direction);
+		return new LaserStat(shape.getX(), shape.getY(), shape.getRotation());
 	}
 }
