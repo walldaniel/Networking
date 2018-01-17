@@ -59,7 +59,7 @@ public class Player {
 		// Decrease the force on the ship
 		forces.x *= 0.96f;
 		forces.y *= 0.96f;
-		rotationalForce *= 0.9f;
+		rotationalForce *= 0.86f;
 		
 		// Check if out of bounds
 		// TODO: Edit this so that it depends on the rotation of the player
