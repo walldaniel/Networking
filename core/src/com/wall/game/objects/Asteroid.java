@@ -86,7 +86,7 @@ public class Asteroid {
 	// Returns true if out of bounds, so that it can be deleted
 	public boolean update(float dt) {
 		// Update the position of asteroid
-		shape.translate(dt * 64f * MathUtils.sinDeg(shape.getRotation()), dt * 64f * MathUtils.cosDeg(shape.getRotation()));
+		shape.translate(dt * 6000 * (1/ (float) size) * MathUtils.sinDeg(shape.getRotation()), dt * 6000 * (1/ (float) size) * MathUtils.cosDeg(shape.getRotation()));
 
 		// Check if asteroid is out of bounds
 		if (shape.getX() < -64f || shape.getX() > AsteroidGame.WIDTH + 64f || shape.getY() < -64f || shape.getY() > AsteroidGame.HEIGHT + 64f) {

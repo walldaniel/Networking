@@ -62,6 +62,7 @@ public class Player {
 		rotationalForce *= 0.86f;
 		
 		// Check if out of bounds
+		
 		// TODO: Edit this so that it depends on the rotation of the player
 		if(shape.getX() <= 0) {
 			shape.setPosition(0, shape.getY());

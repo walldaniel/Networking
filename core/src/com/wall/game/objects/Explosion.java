@@ -18,9 +18,9 @@ public class Explosion {
 	// Update the size of the explosion
 	// Once explosion has grown too big, delete it
 	public boolean update() {
-		size *= 1.5f;
+		size *= 1.4f;
 		
-		if(size > 32) 
+		if(size > 48) 
 			return true;
 		
 		return false;

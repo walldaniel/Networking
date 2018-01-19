@@ -1,7 +1,8 @@
-package com.wall.game;
+package com.wall.game.screens;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -13,13 +14,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
+import com.wall.game.AsteroidGame;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Explosion;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
 
 public class PlayScreen implements Screen {
-
+	private Game game;
+	private SpriteBatch sb;
+	
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
 
@@ -28,13 +32,13 @@ public class PlayScreen implements Screen {
 	private ArrayList<Asteroid> asteroids;
 	private ArrayList<Explosion> explosions;
 	
-	private SpriteBatch sb;
 	private BitmapFont font;
 	private int lives;	// How many lives the player has left before losing
 	private int score;
 
-	public PlayScreen(SpriteBatch sb) {
+	public PlayScreen(Game game, SpriteBatch sb) {
 		this.sb = sb;
+		this.game = game;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, AsteroidGame.WIDTH, AsteroidGame.HEIGHT);
@@ -130,7 +134,9 @@ public class PlayScreen implements Screen {
 		for(int i = 0; i < asteroids.size(); i++) {
 			if(Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShip())) {				
 				// Show an explosion at the player and asteroid position
-				explosions.add(new Explosion(player.getX(), player.getY()));
+				float[] vertices = player.getShip().getTransformedVertices();
+				player.getShip().getOriginX();
+				explosions.add(new Explosion((vertices[0] + vertices[4]) / 2, (vertices[1] + vertices[3]) / 2));
 				explosions.add(new Explosion(asteroids.get(i).getX(), asteroids.get(i).getY()));
 				
 				// Remove the asteroid
@@ -142,8 +148,11 @@ public class PlayScreen implements Screen {
 				
 				// If lives is 0 or less then game over screen
 				// TODO: make game over screen
-				if(lives < 1)
+				if(lives < 1) {
 					System.out.println("GAME OVER!");
+					
+					game.setScreen(new GameOverScreen(game, sb));
+				}
 			}
 		}
 		
@@ -177,26 +186,26 @@ public class PlayScreen implements Screen {
 			}
 		}
 
-		// Random chance to spawn an asteroid, 1/20 chance
-		if (Math.random() > 0.96f) {
+		// Random chance to spawn an asteroid, 2/100 chance per frame
+		if (Math.random() > 0.98f) {
 			// Randomly choose which side to generate the asteroid on
 			// TODO: Have the asteroid spawn with a direction towards the player
 			switch ((int) (Math.random() * 4)) {
 			case 0: // left
 				asteroids.add(new Asteroid(-16, (float) Math.random() * AsteroidGame.HEIGHT,
-						(float) (Math.random() * 90 + 45), 63, (int) (Math.random() * 3 + 4)));
+						(float) (Math.random() * 90 + 45), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
 				break;
 			case 1: // right
 				asteroids.add(new Asteroid(AsteroidGame.WIDTH + 16f, (float) Math.random() * AsteroidGame.HEIGHT,
-						(float) (Math.random() * 90 + 225), 63, (int) (Math.random() * 3 + 4)));
+						(float) (Math.random() * 90 + 225), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
 				break;
 			case 2: // top
 				asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, AsteroidGame.HEIGHT + 16f,
-						(float) (Math.random() * 90 + 135), 63, (int) (Math.random() * 3 + 4)));
+						(float) (Math.random() * 90 + 135), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
 				break;
 			case 3: // bottom
 				asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, -16f,
-						(float) (Math.random() * 90 + 305), 63, (int) (Math.random() * 3 + 4)));
+						(float) (Math.random() * 90 + 305), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
 				break;
 			}
 		}
@@ -235,7 +244,8 @@ public class PlayScreen implements Screen {
 			shapeRenderer.polygon(a.getShape().getTransformedVertices());
 		}
 
-		// Draw the explosions
+		// Draw the explosions in red
+		shapeRenderer.setColor(1, 0.1f, 0.1f, 1);
 		for (Explosion e : explosions) {
 			float angle = 0;
 
