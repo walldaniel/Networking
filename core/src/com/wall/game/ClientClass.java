@@ -48,8 +48,6 @@ public class ClientClass {
 							if (o instanceof UpdatePosition) {
 								try {
 									game.updatePosition((UpdatePosition) o);
-								} catch(ArrayIndexOutOfBoundsException e) {
-									System.out.println("oh noes");
 								} catch(IndexOutOfBoundsException e) {
 									System.out.println("Oh nooes!");
 								}
@@ -63,7 +61,6 @@ public class ClientClass {
 						game.addPlayer((Player) object);
 					} else if (object instanceof Asteroid) {
 						game.addAsteroid((Asteroid) object);
-						System.out.println("Asteroid has landed");
 					} else if (object instanceof Laser) {
 						game.addLaser((Laser) object);
 					} else if (object instanceof Explosion) {
@@ -77,6 +74,10 @@ public class ClientClass {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public int getId() {
+		return client.getID();
 	}
 
 }

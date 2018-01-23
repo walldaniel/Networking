@@ -31,7 +31,7 @@ public class PlayScreen implements Screen {
 
 	private ClientClass client;
 
-	private Player player;
+	private ArrayList<Player> players;
 	private ArrayList<Laser> lasers;
 	private ArrayList<Asteroid> asteroids;
 	private ArrayList<Explosion> explosions;
@@ -53,7 +53,8 @@ public class PlayScreen implements Screen {
 		asteroids = new ArrayList<Asteroid>();
 		explosions = new ArrayList<Explosion>();
 
-		player = new Player(32, 32);
+		players = new ArrayList<Player>();
+		players.add(new Player(32, 32));
 
 		font = new BitmapFont();
 		lives = 3; // Start with 3 lives, could change later
@@ -61,33 +62,38 @@ public class PlayScreen implements Screen {
 
 		// Connect to the server
 		client = new ClientClass(this);
+		
+		// Send the player to the server
+		
 	}
 
 	public void update(float dt) {
 		// Get the user input
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.addRotationalForce(dt * 40f);
+			players.get(0).addRotationalForce(dt * 40f);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.addRotationalForce(-dt * 40f);
+			players.get(0).addRotationalForce(-dt * 40f);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			player.addForceForward(dt * 16f);
+			players.get(0).addForceForward(dt * 16f);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			player.addForceForward(-dt * 16f);
+			players.get(0).addForceForward(-dt * 16f);
 		}
 
 		// If the space bar is pressed launch new bullet at the center of the sprite
 		// TODO: fix the lasers from ship
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			lasers.add(new Laser(player.getShape().getTransformedVertices()[2],
-					player.getShape().getTransformedVertices()[3], player.getDirectionInDegrees()));
+			lasers.add(new Laser(players.get(0).getShape().getTransformedVertices()[2],
+					players.get(0).getShape().getTransformedVertices()[3], players.get(0).getDirectionInDegrees()));
 		}
 
 		// Update the location of the ship
-		player.update(dt * 60);
-
+		for(Player p : players) {
+			p.update(dt * 60);
+		}
+		
 		// Update all the lasers position
 		// Also sees if the laser is out of bounds and removes
 		for (int i = lasers.size() - 1; i >= 0; i--) {
@@ -139,10 +145,10 @@ public class PlayScreen implements Screen {
 
 		// Check if an asteroid has hit the player and lose a life
 		for (int i = 0; i < asteroids.size(); i++) {
-			if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShape())) {
+			if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), players.get(0).getShape())) {
 				// Show an explosion at the player and asteroid position
-				float[] vertices = player.getShape().getTransformedVertices();
-				player.getShape().getOriginX();
+				float[] vertices = players.get(0).getShape().getTransformedVertices();
+				players.get(0).getShape().getOriginX();
 				explosions.add(new Explosion((vertices[0] + vertices[4]) / 2, (vertices[1] + vertices[3]) / 2));
 				explosions.add(new Explosion(asteroids.get(i).getX(), asteroids.get(i).getY()));
 
@@ -246,7 +252,10 @@ public class PlayScreen implements Screen {
 		shapeRenderer.setColor(1, 1, 1, 1);
 
 		// Player stuff
-		shapeRenderer.polygon(player.getShape().getTransformedVertices());
+		for(Player p : players) {
+			shapeRenderer.polygon(p.getShape().getTransformedVertices());
+		}
+		
 
 		// Draw all the lasers
 		for (Laser l : lasers) {
@@ -331,7 +340,10 @@ public class PlayScreen implements Screen {
 	public void updatePosition(UpdatePosition up) throws IndexOutOfBoundsException {
 		switch (up.obj) {
 		case UpdatePosition.PLAYER:
-			// TODO
+			if(up.index != client.getId()) {
+				players.get(up.index).setDirection(up.direction);
+				players.get(up.index).setPosition(up.x, up.y);
+			}
 			break;
 		case UpdatePosition.ASTEROID:
 			asteroids.get(up.index).updatePositoin(up);

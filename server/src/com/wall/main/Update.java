@@ -14,11 +14,17 @@ public class Update {
 		for(Player p : objects.getPlayers()) {
 			p.update(delta);
 		}
-		for(Asteroid a : objects.getAsteroids()) {
-			a.update(delta);
+		for(int i = 0 ; i < objects.getAsteroids().size(); i++) {
+			if(objects.getAsteroids().get(i).update(delta)) {
+				objects.getAsteroids().remove(i);
+				i--;
+			}
 		}
-		for(Laser l : objects.getLasers()) {
-			l.update(delta);
+		for(int i = 0 ; i < objects.getLasers().size(); i++) {
+			if(objects.getLasers().get(i).update(delta)) {
+				objects.getLasers().remove(i);
+				i--;
+			}
 		}
 	}
 	
