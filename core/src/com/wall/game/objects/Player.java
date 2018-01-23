@@ -51,15 +51,15 @@ public class Player {
 	}
 
 	// Update the position of the ship based on the forces applied to it
-	public void update() {
+	public void update(float dt) {
 
 		shape.rotate(rotationalForce);
-		shape.translate(forces.x, forces.y);
+		shape.translate(forces.x * dt, forces.y * dt);
 
 		// Decrease the force on the ship
-		forces.x *= 0.96f;
-		forces.y *= 0.96f;
-		rotationalForce *= 0.86f;
+		forces.x *= 0.96f * dt;
+		forces.y *= 0.96f * dt;
+		rotationalForce *= 0.86f * dt;
 		
 		// Check if out of bounds
 		

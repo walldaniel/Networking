@@ -29,6 +29,7 @@ public class Laser {
 
 	}
 	
+	
 	public boolean update(float dt) {
 		shape.translate(-dt * speed * MathUtils.sinDeg(shape.getRotation()), dt * speed * MathUtils.cosDeg(shape.getRotation()));
 		
@@ -39,7 +40,7 @@ public class Laser {
 		return shape;
 	}
 
-	public double getDirectionInDegrees() {
+	public float getDirectionInDegrees() {
 		return shape.getRotation();
 	}
 
@@ -49,6 +50,11 @@ public class Laser {
 
 	public float getY() {
 		return shape.getY();
+	}
+
+	public void updatePosition(UpdatePosition up) {
+		shape.setPosition(up.x, up.y);
+		shape.setRotation(up.direction);
 	}
 
 }

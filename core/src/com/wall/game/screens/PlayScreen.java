@@ -15,31 +15,35 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.wall.game.AsteroidGame;
+import com.wall.game.ClientClass;
 import com.wall.game.objects.Asteroid;
 import com.wall.game.objects.Explosion;
 import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
+import com.wall.game.objects.UpdatePosition;
 
 public class PlayScreen implements Screen {
 	private Game game;
 	private SpriteBatch sb;
-	
+
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
+
+	private ClientClass client;
 
 	private Player player;
 	private ArrayList<Laser> lasers;
 	private ArrayList<Asteroid> asteroids;
 	private ArrayList<Explosion> explosions;
-	
+
 	private BitmapFont font;
-	private int lives;	// How many lives the player has left before losing
+	private int lives; // How many lives the player has left before losing
 	private int score;
 
 	public PlayScreen(Game game, SpriteBatch sb) {
 		this.sb = sb;
 		this.game = game;
-		
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, AsteroidGame.WIDTH, AsteroidGame.HEIGHT);
 
@@ -50,10 +54,13 @@ public class PlayScreen implements Screen {
 		explosions = new ArrayList<Explosion>();
 
 		player = new Player(32, 32);
-		
+
 		font = new BitmapFont();
-		lives = 3;	// Start with 3 lives, could change later
+		lives = 3; // Start with 3 lives, could change later
 		score = 0;
+
+		// Connect to the server
+		client = new ClientClass(this);
 	}
 
 	public void update(float dt) {
@@ -79,7 +86,7 @@ public class PlayScreen implements Screen {
 		}
 
 		// Update the location of the ship
-		player.update();
+		player.update(dt * 60);
 
 		// Update all the lasers position
 		// Also sees if the laser is out of bounds and removes
@@ -108,7 +115,7 @@ public class PlayScreen implements Screen {
 				if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), lasers.get(j).getShape())) {
 					// Increase the score
 					score += asteroids.get(i).getSize() * 2;
-					
+
 					// If collision occurs, delete the objects and break out of inner for loop
 					// Also if asteroid is larger create one that is smaller
 					if (asteroids.get(i).getSize() > 48) {
@@ -124,38 +131,38 @@ public class PlayScreen implements Screen {
 					asteroids.remove(i);
 					i--;
 					lasers.remove(j);
-					
+
 					break;
 				}
 			}
 		}
 
 		// Check if an asteroid has hit the player and lose a life
-		for(int i = 0; i < asteroids.size(); i++) {
-			if(Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShip())) {				
+		for (int i = 0; i < asteroids.size(); i++) {
+			if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShip())) {
 				// Show an explosion at the player and asteroid position
 				float[] vertices = player.getShip().getTransformedVertices();
 				player.getShip().getOriginX();
 				explosions.add(new Explosion((vertices[0] + vertices[4]) / 2, (vertices[1] + vertices[3]) / 2));
 				explosions.add(new Explosion(asteroids.get(i).getX(), asteroids.get(i).getY()));
-				
+
 				// Remove the asteroid
 				asteroids.remove(i);
 				i--;
-				
+
 				// Decrease lives by one
 				lives--;
-				
+
 				// If lives is 0 or less then game over screen
 				// TODO: make game over screen
-				if(lives < 1) {
+				if (lives < 1) {
 					System.out.println("GAME OVER!");
-					
+
 					game.setScreen(new GameOverScreen(game, sb));
 				}
 			}
 		}
-		
+
 		// Check if an asteroid has hit itself and change the direction
 		// TODO: Actually get this to work
 		// for (int i = 0; i < asteroids.size(); i++) {
@@ -181,32 +188,39 @@ public class PlayScreen implements Screen {
 
 		// Update all the explosions
 		for (int i = 0; i < explosions.size(); i++) {
-			if (explosions.get(i).update()) {
+			if (explosions.get(i).update(dt * 60)) {
 				explosions.remove(i);
 			}
 		}
 
-		// Random chance to spawn an asteroid, 2/100 chance per frame
-		if (Math.random() > 0.98f) {
-			// Randomly choose which side to generate the asteroid on
-			// TODO: Have the asteroid spawn with a direction towards the player
-			switch ((int) (Math.random() * 4)) {
-			case 0: // left
-				asteroids.add(new Asteroid(-16, (float) Math.random() * AsteroidGame.HEIGHT,
-						(float) (Math.random() * 90 + 45), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
-				break;
-			case 1: // right
-				asteroids.add(new Asteroid(AsteroidGame.WIDTH + 16f, (float) Math.random() * AsteroidGame.HEIGHT,
-						(float) (Math.random() * 90 + 225), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
-				break;
-			case 2: // top
-				asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, AsteroidGame.HEIGHT + 16f,
-						(float) (Math.random() * 90 + 135), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
-				break;
-			case 3: // bottom
-				asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, -16f,
-						(float) (Math.random() * 90 + 305), (int) (Math.random() * 32 + 48), (int) (Math.random() * 3 + 4)));
-				break;
+		// If there is no server connection spawn asteroids
+		if (client == null) {
+			// Random chance to spawn an asteroid, 2/100 chance per frame
+			if (Math.random() > 0.98f) {
+				// Randomly choose which side to generate the asteroid on
+				// TODO: Have the asteroid spawn with a direction towards the player
+				switch ((int) (Math.random() * 4)) {
+				case 0: // left
+					asteroids.add(new Asteroid(-16, (float) Math.random() * AsteroidGame.HEIGHT,
+							(float) (Math.random() * 90 + 45), (int) (Math.random() * 32 + 48),
+							(int) (Math.random() * 3 + 4)));
+					break;
+				case 1: // right
+					asteroids.add(new Asteroid(AsteroidGame.WIDTH + 16f, (float) Math.random() * AsteroidGame.HEIGHT,
+							(float) (Math.random() * 90 + 225), (int) (Math.random() * 32 + 48),
+							(int) (Math.random() * 3 + 4)));
+					break;
+				case 2: // top
+					asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, AsteroidGame.HEIGHT + 16f,
+							(float) (Math.random() * 90 + 135), (int) (Math.random() * 32 + 48),
+							(int) (Math.random() * 3 + 4)));
+					break;
+				case 3: // bottom
+					asteroids.add(new Asteroid((float) Math.random() * AsteroidGame.WIDTH, -16f,
+							(float) (Math.random() * 90 + 305), (int) (Math.random() * 32 + 48),
+							(int) (Math.random() * 3 + 4)));
+					break;
+				}
 			}
 		}
 	}
@@ -245,7 +259,7 @@ public class PlayScreen implements Screen {
 		}
 
 		// Draw the explosions in red
-		shapeRenderer.setColor(1, 0.1f, 0.1f, 1);
+//		shapeRenderer.setColor(1, 0.1f, 0.1f, 1);	<-- changes the colour of the explosions to red
 		for (Explosion e : explosions) {
 			float angle = 0;
 
@@ -257,14 +271,14 @@ public class PlayScreen implements Screen {
 		}
 
 		shapeRenderer.end();
-		
+
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
-		
+
 		// Draw the number of lives and score in top left corner
 		font.draw(sb, "lives:  " + Integer.toString(lives), 32, AsteroidGame.HEIGHT - 32f);
 		font.draw(sb, "score:  " + Integer.toString(score), 32, AsteroidGame.HEIGHT - 48f);
-		
+
 		sb.end();
 	}
 
@@ -297,4 +311,35 @@ public class PlayScreen implements Screen {
 		shapeRenderer.dispose();
 	}
 
+	public void addPlayer(Player object) {
+		// TODO
+	}
+
+	public void addAsteroid(Asteroid object) {
+		asteroids.add(object);
+	}
+
+	public void addLaser(Laser object) {
+		lasers.add(object);
+	}
+
+	public void addExplosion(Explosion object) {
+		explosions.add(object);
+	}
+
+	public void updatePosition(UpdatePosition up) throws ArrayIndexOutOfBoundsException {
+		switch (up.obj) {
+		case UpdatePosition.PLAYER:
+			// TODO
+			break;
+		case UpdatePosition.ASTEROID:
+			asteroids.get(up.index).updatePositoin(up);
+			break;
+		case UpdatePosition.LASER:
+			lasers.get(up.index).updatePosition(up);
+			break;
+		default:
+			break;
+		}
+	}
 }

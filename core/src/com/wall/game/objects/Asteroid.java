@@ -127,5 +127,10 @@ public class Asteroid {
 	public void translate(float x, float y) {
 		shape.translate(x, y);
 	}
+	
+	public void updatePositoin(UpdatePosition up) {
+		shape.setPosition(up.x, up.y);
+		shape.setRotation(up.direction);
+	}
 
 }

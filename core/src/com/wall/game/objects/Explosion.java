@@ -17,8 +17,8 @@ public class Explosion {
 	
 	// Update the size of the explosion
 	// Once explosion has grown too big, delete it
-	public boolean update() {
-		size *= 1.4f;
+	public boolean update(float dt) {
+		size *= 1.4f * dt;
 		
 		if(size > 48) 
 			return true;
