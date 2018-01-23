@@ -29,7 +29,7 @@ public class ClientClass {
 			InetAddress address = client.discoverHost(54777, 5000);
 
 			if (address != null) {
-				client.connect(2000, address, 54555, 54777);
+				client.connect(1000, address, 54555, 54777);
 			} else {
 				// TODO: connect to a specific address
 			}
@@ -47,9 +47,11 @@ public class ClientClass {
 						for (Object o : arr) {
 							if (o instanceof UpdatePosition) {
 								try {
-								game.updatePosition((UpdatePosition) o);
+									game.updatePosition((UpdatePosition) o);
 								} catch(ArrayIndexOutOfBoundsException e) {
 									System.out.println("oh noes");
+								} catch(IndexOutOfBoundsException e) {
+									System.out.println("Oh nooes!");
 								}
 							} else if(o instanceof Asteroid) {
 								game.addAsteroid((Asteroid) o);
@@ -61,6 +63,7 @@ public class ClientClass {
 						game.addPlayer((Player) object);
 					} else if (object instanceof Asteroid) {
 						game.addAsteroid((Asteroid) object);
+						System.out.println("Asteroid has landed");
 					} else if (object instanceof Laser) {
 						game.addLaser((Laser) object);
 					} else if (object instanceof Explosion) {

@@ -81,8 +81,8 @@ public class PlayScreen implements Screen {
 		// If the space bar is pressed launch new bullet at the center of the sprite
 		// TODO: fix the lasers from ship
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			lasers.add(new Laser(player.getShip().getTransformedVertices()[2],
-					player.getShip().getTransformedVertices()[3], player.getDirectionInDegrees()));
+			lasers.add(new Laser(player.getShape().getTransformedVertices()[2],
+					player.getShape().getTransformedVertices()[3], player.getDirectionInDegrees()));
 		}
 
 		// Update the location of the ship
@@ -139,10 +139,10 @@ public class PlayScreen implements Screen {
 
 		// Check if an asteroid has hit the player and lose a life
 		for (int i = 0; i < asteroids.size(); i++) {
-			if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShip())) {
+			if (Intersector.overlapConvexPolygons(asteroids.get(i).getShape(), player.getShape())) {
 				// Show an explosion at the player and asteroid position
-				float[] vertices = player.getShip().getTransformedVertices();
-				player.getShip().getOriginX();
+				float[] vertices = player.getShape().getTransformedVertices();
+				player.getShape().getOriginX();
 				explosions.add(new Explosion((vertices[0] + vertices[4]) / 2, (vertices[1] + vertices[3]) / 2));
 				explosions.add(new Explosion(asteroids.get(i).getX(), asteroids.get(i).getY()));
 
@@ -246,7 +246,7 @@ public class PlayScreen implements Screen {
 		shapeRenderer.setColor(1, 1, 1, 1);
 
 		// Player stuff
-		shapeRenderer.polygon(player.getShip().getTransformedVertices());
+		shapeRenderer.polygon(player.getShape().getTransformedVertices());
 
 		// Draw all the lasers
 		for (Laser l : lasers) {
@@ -255,7 +255,8 @@ public class PlayScreen implements Screen {
 
 		// Draw the asteroids
 		for (Asteroid a : asteroids) {
-			shapeRenderer.polygon(a.getShape().getTransformedVertices());
+			if(a != null)
+				shapeRenderer.polygon(a.getShape().getTransformedVertices());
 		}
 
 		// Draw the explosions in red
@@ -327,7 +328,7 @@ public class PlayScreen implements Screen {
 		explosions.add(object);
 	}
 
-	public void updatePosition(UpdatePosition up) throws ArrayIndexOutOfBoundsException {
+	public void updatePosition(UpdatePosition up) throws IndexOutOfBoundsException {
 		switch (up.obj) {
 		case UpdatePosition.PLAYER:
 			// TODO

@@ -4,12 +4,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.wall.game.AsteroidGame;
 
-public class Asteroid {
+public class Asteroid extends Shape {
 
 	public static float SPEED = 64f;
 	private int size;
 	
-	private Polygon shape;
 	public final int numVertices;
 
 	// Main constructor
@@ -95,37 +94,9 @@ public class Asteroid {
 
 		return false;
 	}
-
-	public Polygon getShape() {
-		return shape;
-	}
 	
 	public float[] getVertices() {
 		return shape.getTransformedVertices();
-	}
-
-	public void setX(float x, float y) {
-		shape.setPosition(x, y);
-	}
-
-	public void setDirection(float d) {
-		shape.setRotation(d);
-	}
-
-	public float getX() {
-		return shape.getX();
-	}
-
-	public float getY() {
-		return shape.getY();
-	}
-
-	public float getDirectionInDegrees() {
-		return shape.getRotation();
-	}
-
-	public void translate(float x, float y) {
-		shape.translate(x, y);
 	}
 	
 	public void updatePositoin(UpdatePosition up) {

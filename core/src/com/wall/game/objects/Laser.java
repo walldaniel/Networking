@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.wall.game.AsteroidGame;
 
-public class Laser {
+public class Laser extends Shape {
 
 	private final float[] VERTICES = { 0,0,4,0,4,16,0,16};
 	
@@ -16,8 +16,6 @@ public class Laser {
 	public static final int HEIGHT = 64;
 
 	private final float speed = 1024f;
-
-	private Polygon shape;
 
 	public Laser(float x, float y, float d) {
 		shape = new Polygon(VERTICES);
@@ -34,22 +32,6 @@ public class Laser {
 		shape.translate(-dt * speed * MathUtils.sinDeg(shape.getRotation()), dt * speed * MathUtils.cosDeg(shape.getRotation()));
 		
 		return false;
-	}
-	
-	public Polygon getShape() {
-		return shape;
-	}
-
-	public float getDirectionInDegrees() {
-		return shape.getRotation();
-	}
-
-	public float getX() {
-		return shape.getX();
-	}
-
-	public float getY() {
-		return shape.getY();
 	}
 
 	public void updatePosition(UpdatePosition up) {

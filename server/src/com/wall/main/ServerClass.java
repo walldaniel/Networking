@@ -21,7 +21,7 @@ public class ServerClass {
 	private GameObjects objects;
 	private Server server;
 
-	public ServerClass() throws IOException {
+	public ServerClass() throws IOException {		
 		objects = new GameObjects();
 
 		server = new Server();
@@ -34,7 +34,7 @@ public class ServerClass {
 
 		server.addListener(new Listener() {
 			public void received(Connection connection, Object object) {
-				if (object instanceof String) {
+				if (object instanceof Player) {
 					server.sendToAllExceptTCP(connection.getID(), object);
 
 					objects.addPlayer((Player) object);
@@ -113,6 +113,9 @@ public class ServerClass {
 				a = null;
 			}
 
+			if(a == null)
+				System.out.println("null");
+			
 			// Send the asteroid to the clients and add to list
 			server.sendToAllTCP(a);
 			objects.addAsteroid(a);
