@@ -79,5 +79,9 @@ public class ClientClass {
 	public int getId() {
 		return client.getID();
 	}
+	
+	public boolean isConnected() {
+		return client.isConnected();
+	}
 
 }

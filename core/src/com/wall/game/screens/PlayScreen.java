@@ -200,7 +200,7 @@ public class PlayScreen implements Screen {
 		}
 
 		// If there is no server connection spawn asteroids
-		if (client == null) {
+		if (!client.isConnected()) {
 			// Random chance to spawn an asteroid, 2/100 chance per frame
 			if (Math.random() > 0.98f) {
 				// Randomly choose which side to generate the asteroid on
