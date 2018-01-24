@@ -22,21 +22,11 @@ public class Laser extends Shape {
 		shape.setPosition(x, y);
 		shape.setRotation(d);
 	}
-
-	public Laser() {
-
-	}
-	
 	
 	public boolean update(float dt) {
 		shape.translate(-dt * speed * MathUtils.sinDeg(shape.getRotation()), dt * speed * MathUtils.cosDeg(shape.getRotation()));
 		
 		return false;
-	}
-
-	public void updatePosition(UpdatePosition up) {
-		shape.setPosition(up.x, up.y);
-		shape.setRotation(up.direction);
 	}
 
 }

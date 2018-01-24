@@ -6,10 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.wall.game.AsteroidGame;
 
 public class Player extends Shape {
-
+	// The placement of the vertices of the ship when it is spawned
 	private final float[] VERTICES = { 0f, 0f, 16f, 32f, 32f, 0f, 16f, 8f };
-
-	private int playerNumber;
 
 	private Vector2 forces;
 	private float rotationalForce; // +ve is right
@@ -17,23 +15,11 @@ public class Player extends Shape {
 	public Player(float x, float y) {
 		shape = new Polygon(VERTICES);
 		shape.setPosition(x, y);
-		shape.setOrigin(x - 16, y - 8); // Sets the point of rotation to the front of the ship
+		shape.setOrigin(16, 24); // Sets the point of rotation to the front of the ship
 		shape.setRotation(0);
 
 		forces = new Vector2(0f, 0f);
 		rotationalForce = 0f;
-	}
-
-	public Player() {
-
-	}
-
-	public void setPlayerNumber(int playerNumber) {
-		this.playerNumber = playerNumber;
-	}
-
-	public int getPlayerNumber() {
-		return playerNumber;
 	}
 
 	// Update the position of the ship based on the forces applied to it
@@ -76,8 +62,6 @@ public class Player extends Shape {
 
 	// A force either left or right
 	public void addRotationalForce(float force) {
-		if (rotationalForce < 32f && rotationalForce > -32f) {
-			rotationalForce += force;
-		}
+		rotationalForce += force;
 	}
 }

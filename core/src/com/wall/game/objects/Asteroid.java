@@ -98,10 +98,5 @@ public class Asteroid extends Shape {
 	public float[] getVertices() {
 		return shape.getTransformedVertices();
 	}
-	
-	public void updatePositoin(UpdatePosition up) {
-		shape.setPosition(up.x, up.y);
-		shape.setRotation(up.direction);
-	}
 
 }
