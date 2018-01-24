@@ -9,6 +9,7 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
+		// Set the specifications of the game screen
 		config.width = AsteroidGame.WIDTH;
 		config.height = AsteroidGame.HEIGHT;
 		config.foregroundFPS = 60;

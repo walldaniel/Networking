@@ -25,6 +25,7 @@ public class MenuScreen implements Screen {
 
 		font = new BitmapFont(Gdx.files.internal("assets/MainMenuFont.fnt"));
 		
+		// Text to display on the main screen
 		titleText = "ASTEROID GAME";
 		instructionsText = "Press  enter  to  start";
 		
@@ -98,8 +99,7 @@ public class MenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		font.dispose();
 	}
 
 }

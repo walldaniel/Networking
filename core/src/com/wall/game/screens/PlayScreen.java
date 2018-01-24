@@ -2,14 +2,12 @@ package com.wall.game.screens;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
@@ -72,7 +70,6 @@ public class PlayScreen implements Screen {
 		}
 
 		// If the space bar is pressed launch new bullet at the center of the sprite
-		// TODO: fix the lasers from ship
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			lasers.add(new Laser(player.getShape().getTransformedVertices()[2],
 					player.getShape().getTransformedVertices()[3], player.getDirectionInDegrees()));
@@ -154,37 +151,11 @@ public class PlayScreen implements Screen {
 				lives--;
 
 				// If lives is 0 or less then game over screen
-				// TODO: make game over screen
 				if (lives < 1) {
-					System.out.println("GAME OVER!");
-
 					game.setScreen(new GameOverScreen(game, score));
 				}
 			}
 		}
-
-		// Check if an asteroid has hit itself and change the direction
-		// TODO: Actually get this to work
-		// for (int i = 0; i < asteroids.size(); i++) {
-		// for (int j = 0; j < asteroids.size(); j++) {
-		// // Get how much it has to move
-		// MinimumTranslationVector mtv = new MinimumTranslationVector();
-		// Intersector.overlapConvexPolygons(asteroids.get(i).getShape().getTransformedVertices(),
-		// asteroids.get(j).getShape().getTransformedVertices(), mtv);
-		//
-		// // If movement is not 0, then move both objects half way out
-		// if(mtv.normal.x != 0 && mtv.normal.y != 0) {
-		// asteroids.get(i).translate(mtv.normal.x / 2f, mtv.normal.y / 2f);
-		// asteroids.get(j).translate(mtv.normal.x / 2f, mtv.normal.y / 2f);
-		//
-		// // Also reverse the angles for the asteroids
-		// // TODO: do this better
-		// float angle = asteroids.get(i).getDirectionInDegrees();
-		// asteroids.get(i).setDirection(asteroids.get(j).getDirectionInDegrees());
-		// asteroids.get(j).setDirection(angle);
-		// }
-		// }
-		// }
 
 		// Update all the explosions
 		for (int i = 0; i < explosions.size(); i++) {
@@ -196,7 +167,6 @@ public class PlayScreen implements Screen {
 		// Random chance to spawn an asteroid, 2/100 chance per frame
 		if (Math.random() > 0.98f) {
 			// Randomly choose which side to generate the asteroid on
-			// TODO: Have the asteroid spawn with a direction towards the player
 			switch ((int) (Math.random() * 4)) {
 			case 0: // left
 				asteroids.add(new Asteroid(-16, (float) Math.random() * AsteroidGame.HEIGHT,
@@ -224,12 +194,6 @@ public class PlayScreen implements Screen {
 	}
 
 	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void render(float dt) {
 		// Get updates from user
 		update(Gdx.graphics.getDeltaTime());
@@ -240,6 +204,8 @@ public class PlayScreen implements Screen {
 
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
+
+		// Set the shape renderer into line mode, and set the colour to white
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(1, 1, 1, 1);
 
@@ -279,6 +245,12 @@ public class PlayScreen implements Screen {
 		font.draw(game.getSb(), "score:  " + Integer.toString(score), 32, AsteroidGame.HEIGHT - 48f);
 
 		game.getSb().end();
+	}
+
+	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

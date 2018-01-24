@@ -16,18 +16,14 @@ public class GameOverScreen implements Screen {
 
 	public GameOverScreen(AsteroidGame game, int score) {
 		this.game = game;
+		// Gets the score from the game
 		this.score = score;
 
+		// Load the font to draw text
 		font = new BitmapFont(Gdx.files.internal("assets/GameOverFont.fnt"));
 
 		// Used to only restart the game once the user releases the button
 		isButtonPressed = false;
-	}
-
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void update(float dt) {
@@ -52,9 +48,12 @@ public class GameOverScreen implements Screen {
 		
 		game.getSb().begin();
 
+		// Draw the score that the user got
 		font.draw(game.getSb(), "Score: " + score, 32, 332);
+		// Draw the losing message
 		font.draw(game.getSb(), "You Win!!!!...", 32, 288);
 		font.draw(game.getSb(), "at being a loser oooo! haha", 32, 256);
+		// Draw the instructions on what to do next
 		font.draw(game.getSb(), "?!? Click the mouse to try again?", 32, 96);
 		
 		game.getSb().end();
@@ -86,6 +85,12 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		font.dispose();
+	}
+
+
+	@Override
+	public void show() {
 		// TODO Auto-generated method stub
 
 	}
