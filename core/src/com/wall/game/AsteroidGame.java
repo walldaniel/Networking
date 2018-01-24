@@ -3,6 +3,7 @@ package com.wall.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wall.game.screens.MenuScreen;
 import com.wall.game.screens.PlayScreen;
 
 public class AsteroidGame extends Game {
@@ -11,12 +12,16 @@ public class AsteroidGame extends Game {
 
 	public SpriteBatch sb;
 
+	public SpriteBatch getSb() {
+		return sb;
+	}
+	
 	@Override
 	public void create() {
 		sb = new SpriteBatch();
 		
 		// Initialize and set the screen to the playing screen
-		this.setScreen(new PlayScreen(this, sb));
+		this.setScreen(new MenuScreen(this));
 	}
 
 	@Override

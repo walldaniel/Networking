@@ -1,25 +1,24 @@
 package com.wall.game.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wall.game.AsteroidGame;
 
 public class GameOverScreen implements Screen {
-	private Game game;
-	private SpriteBatch sb;
+	private AsteroidGame game;
 
 	private BitmapFont font;
 	private boolean isButtonPressed;
+	private int score;
 
-	public GameOverScreen(Game game, SpriteBatch sb) {
-		this.sb = sb;
+	public GameOverScreen(AsteroidGame game, int score) {
 		this.game = game;
+		this.score = score;
 
-		font = new BitmapFont(Gdx.files.internal("assets/font.fnt"));
+		font = new BitmapFont(Gdx.files.internal("assets/GameOverFont.fnt"));
 
 		// Used to only restart the game once the user releases the button
 		isButtonPressed = false;
@@ -38,7 +37,7 @@ public class GameOverScreen implements Screen {
 			isButtonPressed = true;
 		} else {
 			if (isButtonPressed) {
-				game.setScreen(new PlayScreen(game, sb));
+				game.setScreen(new PlayScreen(game));
 			}
 		}
 	}
@@ -51,13 +50,14 @@ public class GameOverScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		sb.begin();
+		game.getSb().begin();
+
+		font.draw(game.getSb(), "Score: " + score, 32, 332);
+		font.draw(game.getSb(), "You Win!!!!...", 32, 288);
+		font.draw(game.getSb(), "at being a loser oooo! haha", 32, 256);
+		font.draw(game.getSb(), "?!? Click the mouse to try again?", 32, 96);
 		
-		font.draw(sb, "You Win!!!!...", 32, 288);
-		font.draw(sb, "at being a loser oooo! haha", 32, 256);
-		font.draw(sb, "?!? Click the mouse to try again?", 32, 96);
-		
-		sb.end();
+		game.getSb().end();
 	}
 
 	@Override

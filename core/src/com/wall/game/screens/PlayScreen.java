@@ -21,8 +21,7 @@ import com.wall.game.objects.Laser;
 import com.wall.game.objects.Player;
 
 public class PlayScreen implements Screen {
-	private Game game;
-	private SpriteBatch sb;
+	private AsteroidGame game;
 
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
@@ -36,8 +35,7 @@ public class PlayScreen implements Screen {
 	private int lives; // How many lives the player has left before losing
 	private int score;
 
-	public PlayScreen(Game game, SpriteBatch sb) {
-		this.sb = sb;
+	public PlayScreen(AsteroidGame game) {
 		this.game = game;
 
 		camera = new OrthographicCamera();
@@ -119,7 +117,13 @@ public class PlayScreen implements Screen {
 								(int) (asteroids.get(i).getSize() * (Math.random() * 0.3f + 0.5f)),
 								(int) (Math.random() * 3 + 4)));
 					}
-					
+					// If the size if very large than create two asteroids
+					if (asteroids.get(i).getSize() > 56) {
+						asteroids.add(new Asteroid(asteroids.get(i).getX(), asteroids.get(i).getY(),
+								(float) (Math.random() * 365),
+								(int) (asteroids.get(i).getSize() * (Math.random() * 0.3f + 0.5f)),
+								(int) (Math.random() * 3 + 4)));
+					}
 
 					// Add an explosion at the coordinates
 					explosions.add(new Explosion(asteroids.get(i).getX(), asteroids.get(i).getY()));
@@ -154,7 +158,7 @@ public class PlayScreen implements Screen {
 				if (lives < 1) {
 					System.out.println("GAME OVER!");
 
-					game.setScreen(new GameOverScreen(game, sb));
+					game.setScreen(new GameOverScreen(game, score));
 				}
 			}
 		}
@@ -267,14 +271,14 @@ public class PlayScreen implements Screen {
 
 		shapeRenderer.end();
 
-		sb.setProjectionMatrix(camera.combined);
-		sb.begin();
+		game.getSb().setProjectionMatrix(camera.combined);
+		game.getSb().begin();
 
 		// Draw the number of lives and score in top left corner
-		font.draw(sb, "lives:  " + Integer.toString(lives), 32, AsteroidGame.HEIGHT - 32f);
-		font.draw(sb, "score:  " + Integer.toString(score), 32, AsteroidGame.HEIGHT - 48f);
+		font.draw(game.getSb(), "lives:  " + Integer.toString(lives), 32, AsteroidGame.HEIGHT - 32f);
+		font.draw(game.getSb(), "score:  " + Integer.toString(score), 32, AsteroidGame.HEIGHT - 48f);
 
-		sb.end();
+		game.getSb().end();
 	}
 
 	@Override
