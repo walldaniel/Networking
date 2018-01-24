@@ -7,12 +7,12 @@ import com.wall.game.AsteroidGame;
 public class Asteroid extends Shape {
 
 	public static float SPEED = 64f;
-	private int size;
+	private float size;
 	
 	public final int numVertices;
 
 	// Main constructor
-	public Asteroid(float x, float y, float direction, int size, int numVertices) {
+	public Asteroid(float x, float y, float direction, float size, int numVertices) {
 		this.numVertices = numVertices;
 		this.size = size;
 
@@ -65,7 +65,7 @@ public class Asteroid extends Shape {
 		shape.setRotation(direction);
 	}
 
-	public int getSize() {
+	public float getSize() {
 		return size;
 	}
 	

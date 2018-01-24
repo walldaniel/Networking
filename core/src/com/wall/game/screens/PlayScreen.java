@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -29,6 +30,10 @@ public class PlayScreen implements Screen {
 	private ArrayList<Asteroid> asteroids;
 	private ArrayList<Explosion> explosions;
 
+	private Sound hurtSound;
+	private Sound explosionSound;
+	private Sound pewSound;
+	
 	private BitmapFont font;
 	private int lives; // How many lives the player has left before losing
 	private int score;
@@ -52,6 +57,11 @@ public class PlayScreen implements Screen {
 		font = new BitmapFont();
 		lives = 3; // Start with 3 lives, could change later
 		score = 0;
+		
+		// Load the sounds
+		hurtSound = Gdx.audio.newSound(Gdx.files.internal("assets/hurt_sound.mp3"));
+		explosionSound = Gdx.audio.newSound(Gdx.files.internal("assets/explosion_sound.mp3"));
+		pewSound = Gdx.audio.newSound(Gdx.files.internal("assets/pew_sound.mp3"));
 	}
 
 	public void update(float dt) {
@@ -73,6 +83,9 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			lasers.add(new Laser(player.getShape().getTransformedVertices()[2],
 					player.getShape().getTransformedVertices()[3], player.getDirectionInDegrees()));
+			
+			// Play a "pew-pew" sound
+			pewSound.play();
 		}
 
 		// Update the location of the ship
@@ -114,10 +127,11 @@ public class PlayScreen implements Screen {
 								(int) (asteroids.get(i).getSize() * (Math.random() * 0.3f + 0.5f)),
 								(int) (Math.random() * 3 + 4)));
 					}
-					// If the size if very large than create two asteroids
+					// If the size if very large than create two asteroids, the second asteroid has an initial
+					// direction of opposite the first spawned one
 					if (asteroids.get(i).getSize() > 56) {
 						asteroids.add(new Asteroid(asteroids.get(i).getX(), asteroids.get(i).getY(),
-								(float) (Math.random() * 365),
+								(float) (asteroids.get(asteroids.size() - 1).getDirectionInDegrees() - (Math.random() * 20 + 170)),
 								(int) (asteroids.get(i).getSize() * (Math.random() * 0.3f + 0.5f)),
 								(int) (Math.random() * 3 + 4)));
 					}
@@ -129,6 +143,9 @@ public class PlayScreen implements Screen {
 					i--;
 					lasers.remove(j);
 
+					// Play the sound
+					explosionSound.play();
+					
 					break;
 				}
 			}
@@ -154,6 +171,9 @@ public class PlayScreen implements Screen {
 				if (lives < 1) {
 					game.setScreen(new GameOverScreen(game, score));
 				}
+				
+				// Play a sound of asteroid getting hit
+				hurtSound.play();
 			}
 		}
 
