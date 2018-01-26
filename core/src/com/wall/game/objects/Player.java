@@ -24,6 +24,21 @@ public class Player extends Shape {
 
 	// Update the position of the ship based on the forces applied to it
 	public void update(float dt) {
+		System.out.println(forces + " - " + rotationalForce);
+		
+		// CHeck if the force is to high
+		if(forces.x > 8f)
+			forces.x = 8;
+		if(forces.x < -8f)
+			forces.x = -8f;
+		if(forces.y > 8f)
+			forces.y = 8f;
+		if(forces.y < -8f)
+			forces.y = -8f;
+		if(rotationalForce > 8f)
+			rotationalForce = 8f;
+		if(rotationalForce < -8f)
+			rotationalForce = -8f;
 
 		shape.rotate(rotationalForce);
 		shape.translate(forces.x * dt, forces.y * dt);
